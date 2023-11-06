@@ -6,7 +6,7 @@ const morgan = require("morgan");
 // eslint-disable-next-line import/no-extraneous-dependencies
 const cors = require("cors");
 // eslint-disable-next-line import/no-extraneous-dependencies
-const rateLimit = require("express-rate-limit");
+// const rateLimit = require("express-rate-limit");
 // eslint-disable-next-line import/no-extraneous-dependencies
 const hpp = require("hpp");
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -45,12 +45,12 @@ app.use(mongoSanitize());
 app.use(xss());
 
 // Limit each IP to 100 requests per 'window' (here, per 15 minutes)
-const limiter = rateLimit({
+// const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
   message:
     "Too many accounts created from this IP, please try again after an hour.",
-});
+// });
 
 // Apply the rate limiting middleware to all requests
 app.use("/api", limiter);
