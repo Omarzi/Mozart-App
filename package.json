@@ -2,7 +2,7 @@
   "name": "nodejs-ecommerce-api-v1",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start:dev": "nodemon server.js",
     "start:prod": "set NODE_ENV=production&& node server.js"
