@@ -64,24 +64,69 @@ exports.addProductToCart = asyncHandler(async (req, res, next) => {
 // @route   GET /api/v1/cart
 // @access  Private/Protected/User
 exports.getLoggedUserCart = asyncHandler(async (req, res, next) => {
-  const cart = await Cart.findOne({ user: req.user._id });
+  const cart = await Cart.findOne({ user: req.user._id }).populate(
+    "cartItems.product"
+  );
 
   if (!cart) {
-    res.status(200).json({
-      message: `There is no cart for this user id : ${req.user._id}`,
+    return res.status(200).json({
+      message: `There is no cart for this user id: ${req.user._id}`,
       data: [],
     });
-    // return next(
-    //   new ApiError(`There is no cart for this user id : ${req.user._id}`, 404)
-    // );
   }
 
-  res.status(200).json({
+  // Replace product IDs with product details
+  const populatedCart = {
     status: "success",
     numOfCartItems: cart.cartItems.length,
-    data: cart,
-  });
+    data: {
+      _id: cart._id,
+      cartItems: cart.cartItems.map((item) => ({
+        _id: item._id,
+        quantity: item.quantity,
+        color: item.color,
+        price: item.price,
+        product: {
+          _id: item.product._id,
+          title: item.product.title,
+          slug: item.product.slug,
+          description: item.product.description,
+          quantity: item.product.quantity,
+          price: item.product.price,
+          priceAfterDiscount: item.product.priceAfterDiscount,
+          imageCover: item.product.imageCover,
+        },
+      })),
+      user: cart.user,
+      createdAt: cart.createdAt,
+      updatedAt: cart.updatedAt,
+      __v: cart.__v,
+      totalCartPrice: cart.totalCartPrice,
+    },
+  };
+
+  res.status(200).json(populatedCart);
 });
+
+// exports.getLoggedUserCart = asyncHandler(async (req, res, next) => {
+//   const cart = await Cart.findOne({ user: req.user._id });
+
+//   if (!cart) {
+//     res.status(200).json({
+//       message: `There is no cart for this user id : ${req.user._id}`,
+//       data: [],
+//     });
+//     // return next(
+//     //   new ApiError(`There is no cart for this user id : ${req.user._id}`, 404)
+//     // );
+//   }
+
+//   res.status(200).json({
+//     status: "success",
+//     numOfCartItems: cart.cartItems.length,
+//     data: cart,
+//   });
+// });
 
 // @desc    Remove specific cart item
 // @route   Delete /api/v1/cart/:itemId
@@ -177,7 +222,7 @@ exports.applyCoupon = asyncHandler(async (req, res, next) => {
   cart.totalPriceAfterDiscount = totalPriceAfterDiscount;
   await cart.save();
 
-   res.status(200).json({
+  res.status(200).json({
     status: "success",
     numOfCartItems: cart.cartItems.length,
     data: cart,
