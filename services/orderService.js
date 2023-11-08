@@ -37,6 +37,7 @@ exports.createCashOrder = asyncHandler(async (req, res, next) => {
     cartItems: cart.cartItems,
     shippingAddress: req.body.shippingAddress,
     totalOrderPrice,
+    
   });
 
   // 4) After creating order, decrement product quantity, icreament product sold

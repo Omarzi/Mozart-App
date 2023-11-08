@@ -58,6 +58,8 @@ const orderSchema = new mongoose.Schema(
       default: false,
     },
 
+    managerId: mongoose.Schema.ObjectId,
+
     deliveredAt: Date,
   },
   { timestamp: true }

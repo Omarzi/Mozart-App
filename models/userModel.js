@@ -1,16 +1,13 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
-const addressSchema = new mongoose.Schema(
-  {
-    alias: String,
-    details: String,
-    phone: String,
-    city: String,
-    postalCode: String,
-  },
-  { _id: false }
-);
+const addressSchema = new mongoose.Schema({
+  alias: String,
+  details: String,
+  phone: String,
+  city: String,
+  postalCode: String,
+});
 
 const userSchema = new mongoose.Schema(
   {
