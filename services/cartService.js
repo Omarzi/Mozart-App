@@ -64,9 +64,10 @@ exports.addProductToCart = asyncHandler(async (req, res, next) => {
 // @route   GET /api/v1/cart
 // @access  Private/Protected/User
 exports.getLoggedUserCart = asyncHandler(async (req, res, next) => {
-  const cart = await Cart.findOne({ user: req.user._id }).populate(
-    "cartItems.product"
-  );
+  const cart = await Cart.findOne({ user: req.user._id }).populate({
+    path: "cartItems.product",
+    select: "title description price imageCover", // Select the fields you want to return
+  });
 
   if (!cart) {
     return res.status(200).json({
@@ -76,27 +77,27 @@ exports.getLoggedUserCart = asyncHandler(async (req, res, next) => {
   }
 
   // Replace product IDs with product details
+  const populatedCartItems = cart.cartItems.map((item) => ({
+    _id: item._id,
+    quantity: item.quantity,
+    color: item.color,
+    price: item.price,
+    product: {
+      _id: item.product._id,
+      title: item.product.title,
+      description: item.product.description,
+      price: item.product.price,
+      imageCover: item.product.imageCover,
+      // Add other fields as needed
+    },
+  }));
+
   const populatedCart = {
     status: "success",
-    numOfCartItems: cart.cartItems.length,
+    numOfCartItems: populatedCartItems.length,
     data: {
       _id: cart._id,
-      cartItems: cart.cartItems.map((item) => ({
-        _id: item._id,
-        quantity: item.quantity,
-        color: item.color,
-        price: item.price,
-        product: {
-          _id: item.product._id,
-          title: item.product.title,
-          slug: item.product.slug,
-          description: item.product.description,
-          quantity: item.product.quantity,
-          price: item.product.price,
-          priceAfterDiscount: item.product.priceAfterDiscount,
-          imageCover: item.product.imageCover,
-        },
-      })),
+      cartItems: populatedCartItems,
       user: cart.user,
       createdAt: cart.createdAt,
       updatedAt: cart.updatedAt,
