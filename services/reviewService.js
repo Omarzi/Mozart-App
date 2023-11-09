@@ -1,3 +1,4 @@
+const asyncHandler = require("express-async-handler");
 const factory = require("./handlersFactory");
 const Review = require("../models/reviewModel");
 
@@ -13,7 +14,33 @@ exports.createFilterObj = (req, res, next) => {
 // @desc    Get list of reviews
 // @route   GET /api/v1/reviews
 // @access  Public
-exports.getReviews = factory.getAll(Review);
+exports.getReviews = asyncHandler(async (req, res, next) => {
+  const reviews = await Review.find().populate("product", "title imageCover");
+
+  const responseData = reviews.map((review) => ({
+    _id: review._id,
+    title: review.product.title,
+    imageCover: review.product.imageCover,
+    ratings: review.ratings,
+    user: review.user,
+    product: review.product,
+    createdAt: review.createdAt,
+    updatedAt: review.updatedAt,
+  }));
+
+  const response = {
+    results: reviews.length,
+    paginationResult: {
+      currentPage: 1,
+      limit: 50,
+      numberOfPages: 1,
+    },
+    data: responseData,
+  };
+
+  res.status(200).json(response);
+});
+// exports.getReviews = factory.getAll(Review);
 
 // @desc    Get sepecific review by id
 // @route   GET /api/v1/reviews/:id
