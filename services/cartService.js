@@ -72,7 +72,7 @@ exports.getLoggedUserCart = asyncHandler(async (req, res, next) => {
   if (!cart) {
     return res.status(200).json({
       message: `There is no cart for this user id: ${req.user._id}`,
-      data: [],
+      data: {},
     });
   }
 
