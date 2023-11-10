@@ -15,7 +15,7 @@ const {
 
 const router = express.Router();
 
-router.use(authService.protect, authService.allowedTo("user"));
+router.use(authService.protect, authService.allowedTo("user", "manager"));
 
 router.route("/").post(addAddress).get(getLoggedUserAddresses);
 
