@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const { v4: uuidv4 } = require("uuid");
 const sharp = require("sharp");
+const ApiFeatures = require("../utils/apiFeatures");
 
 const factory = require("./handlersFactory");
 const { uploadMixOfImages } = require("../middlewares/uploadImageMiddleware");
@@ -54,7 +55,33 @@ exports.setImageToBody = factory.setImageToBody(Banner);
 // @desc    Get list of banners
 // @route   GET /api/v1/banners
 // @access  Public
-exports.getBanners = factory.getAll(Banner);
+// exports.getBanners = factory.getAll(Banner);
+exports.getBanners = asyncHandler(async (req, res, next) => {
+  let filter = {};
+  if (req.filterObj) {
+    filter = req.filterObj;
+  }
+  // Build query
+  const documentsCounts = await Banner.countDocuments();
+  const apiFeatures = new ApiFeatures(Banner.find(filter), req.query)
+    .paginate(documentsCounts)
+    .filter()
+    .limitFields()
+    .sort();
+
+  // Execute query
+  const { mongooseQuery, paginationResult } = apiFeatures;
+  const documents = await mongooseQuery;
+
+  // Check if documents length is greater than 0
+  if (documents.length > 0) {
+    // Return the first document as an object
+    const data = documents[0];
+    res.status(200).json({ results: 1, paginationResult, data });
+  } else {
+    res.status(200).json({ results: 0, paginationResult, data: null });
+  }
+});
 
 // @desc    Get specific banner by id
 // @route   GET /api/v1/banners/:id
