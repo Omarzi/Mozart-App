@@ -10,7 +10,9 @@ const uploadImagesFromUserSchema = new mongoose.Schema(
     nameOfProduct: {
       type: String,
       required: [true, "Product Name is required"],
-    }
+    },
+
+    user: { type: mongoose.Schema.ObjectId, ref: "User" },
   },
   { timestamps: true }
 );
@@ -41,4 +43,7 @@ uploadImagesFromUserSchema.post("save", (doc) => {
   setImageURL(doc);
 });
 
-module.exports = mongoose.model("UploadImageDromUser", uploadImagesFromUserSchema);
+module.exports = mongoose.model(
+  "UploadImageDromUser",
+  uploadImagesFromUserSchema
+);

@@ -1,10 +1,11 @@
 const express = require("express");
 const {
-    updateProductValidator,
-  } = require('../utils/validators/productValidateor');
+  updateProductValidator,
+} = require("../utils/validators/productValidateor");
 
 const {
   uploadImageFromUser,
+  getImagesFromUser,
   uploadProductImages,
   resizeProductImages,
 } = require("../services/uploadImageFromUserService");
@@ -22,6 +23,14 @@ router
     resizeProductImages,
     updateProductValidator,
     uploadImageFromUser
+  );
+
+router
+  .route("/")
+  .get(
+    authService.protect,
+    authService.allowedTo("admin", "manager"),
+    getImagesFromUser
   );
 
 module.exports = router;

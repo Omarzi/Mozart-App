@@ -31,4 +31,6 @@ exports.resizeProductImages = asyncHandler(async (req, res, next) => {
   }
 });
 
-exports.uploadImageFromUser = factory.createOne(UploadImageDromUser);
+exports.uploadImageFromUser = factory.uploadImage(UploadImageDromUser);
+
+exports.getImagesFromUser = factory.getAllImages(UploadImageDromUser);
