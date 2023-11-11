@@ -13,28 +13,33 @@ const brandSchema = new mongoose.Schema(
       type: String,
       lowercase: true,
     },
-    image: String,
+    image: {
+      url: { type: String, required: [true, "image url required"] },
+      imageId: {
+        type: String,
+        required: [true, "image id required"],
+      },
+    },
   },
   { timestamps: true }
 );
 
-const setImageURL = (doc) => {
-  // return image baseurl + image name
-  if (doc.image) {
-    const imageUrl = `${process.env.BASE_URL}/brands/${doc.image}`;
-    doc.image = imageUrl;
-  }
-};
+// const setImageURL = (doc) => {
+//   // return image baseurl + image name
+//   if (doc.image) {
+//     const imageUrl = `${process.env.BASE_URL}/brands/${doc.image}`;
+//     doc.image = imageUrl;
+//   }
+// };
 
-// Find All, Find One, Update
-brandSchema.post("init", (doc) => {
-  setImageURL(doc);
-});
+// // Find All, Find One, Update
+// brandSchema.post("init", (doc) => {
+//   setImageURL(doc);
+// });
 
-// Create
-brandSchema.post("save", (doc) => {
-  setImageURL(doc);
-});
+// // Create
+// brandSchema.post("save", (doc) => {
+//   setImageURL(doc);
+// });
 
 module.exports = mongoose.model("Brand", brandSchema);
-

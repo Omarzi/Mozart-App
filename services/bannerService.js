@@ -14,40 +14,42 @@ exports.uploadBannerImage = uploadMixOfImages([
   },
 ]);
 
-exports.resizeBannerImage = asyncHandler(async (req, res, next) => {
-  //1- Image processing for images
-  if (req.files.images) {
-    req.body.images = [];
-    await Promise.all(
-      req.files.images.map(async (img, index) => {
-        const imageName = `banner-${uuidv4()}-${Date.now()}-${index + 1}.jpeg`;
+exports.setImageToBody = factory.setImageToBody(Banner);
 
-        await sharp(img.buffer)
-          .resize(2000, 1333)
-          .toFormat("jpeg")
-          .jpeg({ quality: 95 })
-          .toFile(`uploads/banners/${imageName}`);
+// exports.resizeBannerImage = asyncHandler(async (req, res, next) => {
+//   //1- Image processing for images
+//   if (req.files.images) {
+//     req.body.images = [];
+//     await Promise.all(
+//       req.files.images.map(async (img, index) => {
+//         const imageName = `banner-${uuidv4()}-${Date.now()}-${index + 1}.jpeg`;
 
-        // Save image into our db
-        req.body.images.push(imageName);
-      })
-    );
+//         await sharp(img.buffer)
+//           .resize(2000, 1333)
+//           .toFormat("jpeg")
+//           .jpeg({ quality: 95 })
+//           .toFile(`uploads/banners/${imageName}`);
 
-    next();
-  }
-  //   if (req.files.images) {
-  //     const imagesFileName = `banner-${uuidv4()}-${Date.now()}.jpeg`;
+//         // Save image into our db
+//         req.body.images.push(imageName);
+//       })
+//     );
 
-  //     await sharp(req.files.images[0].buffer)
-  //       .resize(2000, 1333)
-  //       .toFormat("jpeg")
-  //       .jpeg({ quality: 95 })
-  //       .toFile(`uploads/banners/${imagesFileName}`);
+//     next();
+//   }
+//   //   if (req.files.images) {
+//   //     const imagesFileName = `banner-${uuidv4()}-${Date.now()}.jpeg`;
 
-  //     // Save image into our db
-  //     req.body.images = imagesFileName;
-  //   }
-});
+//   //     await sharp(req.files.images[0].buffer)
+//   //       .resize(2000, 1333)
+//   //       .toFormat("jpeg")
+//   //       .jpeg({ quality: 95 })
+//   //       .toFile(`uploads/banners/${imagesFileName}`);
+
+//   //     // Save image into our db
+//   //     req.body.images = imagesFileName;
+//   //   }
+// });
 
 // @desc    Get list of banners
 // @route   GET /api/v1/banners

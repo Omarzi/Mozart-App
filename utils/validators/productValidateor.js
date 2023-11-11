@@ -51,11 +51,32 @@ exports.createProductValidator = [
     .optional()
     .isArray()
     .withMessage("availableColors should be array of string"),
-  check("imageCover").notEmpty().withMessage("Product imageCover is required"),
+
+  check("image")
+    .custom((value, { req }) => {
+      if (!req.files.image) {
+        throw new Error("Image is empty");
+      }
+      return true;
+    })
+    .bail(),
+
   check("images")
     .optional()
-    .isArray()
-    .withMessage("images should be array of string"),
+    .custom((value, { req }) => {
+      if (!req.files.images) {
+        throw new Error("Images is empty");
+      }
+      return true;
+    })
+    .bail(),
+  // check("imageCover")
+  //   .notEmpty()
+  //   .withMessage("Product imageCover is required"),
+  // check("images")
+  //   .optional()
+  //   .isArray()
+  //   .withMessage("images should be array of string"),
   check("category")
     .notEmpty()
     .withMessage("Product must be belong to a category")

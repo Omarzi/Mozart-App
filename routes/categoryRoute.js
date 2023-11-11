@@ -8,13 +8,20 @@ const {
 } = require("../utils/validators/categoryValidator");
 
 const {
+  uploadImage,
+  deleteImage,
+  updateImage,
+} = require("../config/cloudinary");
+
+const {
   getCategories,
   createCategory,
   getCategory,
   updateCategory,
   deleteCategory,
   uploadCategoryImage,
-  resizeImage,
+  // resizeImage,
+  setImageToBody,
 } = require("../services/categoryService");
 
 const authService = require("../services/authService");
@@ -33,8 +40,9 @@ router
     authService.protect,
     authService.allowedTo("admin", "manager"),
     uploadCategoryImage,
-    resizeImage,
+    // resizeImage,
     createCategoryValidator,
+    uploadImage('category'),
     createCategory
   );
 router
@@ -44,14 +52,18 @@ router
     authService.protect,
     authService.allowedTo("admin", "manager"),
     uploadCategoryImage,
-    resizeImage,
+    // resizeImage,
     updateCategoryValidator,
+    setImageToBody,
+    updateImage,
     updateCategory
   )
   .delete(
     authService.protect,
     authService.allowedTo("admin"),
     deleteCategoryValidator,
+    setImageToBody,
+    deleteImage,
     deleteCategory
   );
 

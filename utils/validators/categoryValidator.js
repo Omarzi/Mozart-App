@@ -1,6 +1,7 @@
 const slugify = require("slugify");
 const { check, body } = require("express-validator");
 const validatorMiddleware = require("../../middlewares/validatorMiddleware");
+const CategoryModel = require("../../models/categoryModel");
 
 // 1- rules
 // 2- middlewares => catch errors from rules if exist
@@ -15,6 +16,14 @@ exports.createCategoryValidator = [
   check("name")
     .notEmpty()
     .withMessage("Category required")
+    .custom(async (name) => {
+      const brandName = await CategoryModel.findOne({ name: name });
+      if (brandName) {
+        throw new Error("category already exists");
+      }
+      return true;
+    })
+    .bail()
     .isLength({ min: 3 })
     .withMessage("Too short category name")
     .isLength({ max: 32 })

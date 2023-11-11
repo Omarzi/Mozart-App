@@ -13,24 +13,31 @@ exports.uploadProductImages = uploadMixOfImages([
   },
 ]);
 
-exports.resizeProductImages = asyncHandler(async (req, res, next) => {
-  // console.log(req.files);
-  //1- Image processing for image
-  if (req.files.image) {
-    const imageFileName = `product-${uuidv4()}-${Date.now()}-from-user.jpeg`;
+exports.setImageToBody = factory.setImageToBody(UploadImageDromUser)
 
-    await sharp(req.files.image[0].buffer)
-      .resize(2000, 1333)
-      .toFormat("jpeg")
-      .jpeg({ quality: 95 })
-      .toFile(`uploads/uploadImageFromUser/${imageFileName}`);
+// exports.resizeProductImages = asyncHandler(async (req, res, next) => {
+//   // console.log(req.files);
+//   //1- Image processing for image
+//   if (req.files.image) {
+//     const imageFileName = `product-${uuidv4()}-${Date.now()}-from-user.jpeg`;
 
-    // Save image into our db
-    req.body.image = imageFileName;
-    next();
-  }
-});
+//     await sharp(req.files.image[0].buffer)
+//       .resize(2000, 1333)
+//       .toFormat("jpeg")
+//       .jpeg({ quality: 95 })
+//       .toFile(`uploads/uploadImageFromUser/${imageFileName}`);
+
+//     // Save image into our db
+//     req.body.image = imageFileName;
+//     next();
+//   }
+// });
 
 exports.uploadImageFromUser = factory.uploadImage(UploadImageDromUser);
 
 exports.getImagesFromUser = factory.getAllImages(UploadImageDromUser);
+
+// @desc    Delete specific product
+// @route   DELETE /api/v1/products/:id
+// @access  Private
+exports.deleteProduct = factory.deleteOne(UploadImageDromUser);

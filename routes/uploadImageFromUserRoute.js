@@ -4,10 +4,18 @@ const {
 } = require("../utils/validators/productValidateor");
 
 const {
+  uploadImage,
+  deleteImages,
+  deleteImage,
+} = require("../config/cloudinary");
+
+const {
   uploadImageFromUser,
   getImagesFromUser,
   uploadProductImages,
-  resizeProductImages,
+  // resizeProductImages,
+  setImageToBody,
+  deleteProduct,
 } = require("../services/uploadImageFromUserService");
 
 const authService = require("../services/authService");
@@ -20,9 +28,17 @@ router
     authService.protect,
     authService.allowedTo("user"),
     uploadProductImages,
-    resizeProductImages,
+    // resizeProductImages,
     updateProductValidator,
+    uploadImage("user"),
     uploadImageFromUser
+  )
+  .delete(
+    authService.protect,
+    authService.allowedTo("admin", "manager"),
+    setImageToBody,
+    deleteImage,
+    deleteProduct
   );
 
 router

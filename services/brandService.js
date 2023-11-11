@@ -10,6 +10,8 @@ const Brand = require("../models/brandModel");
 // Upload Single Image
 exports.uploadBrandImage = uploadSingleImage("image");
 
+exports.setImageToBody = factory.setImageToBody(Brand);
+
 // Image processing
 exports.resizeImage = asyncHandler(async (req, res, next) => {
   const filename = `brand-${uuidv4()}-${Date.now()}.jpeg`;

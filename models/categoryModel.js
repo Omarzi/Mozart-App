@@ -14,29 +14,35 @@ const categorySchema = new mongoose.Schema(
       type: String,
       lowercase: true,
     },
-    image: String,
+    image: {
+      url: { type: String, required: [true, "image url required"] },
+      imageId: {
+        type: String,
+        required: [true, "image id required"],
+      },
+    },
   },
   // Created Two Fields Created at and Updated add
   { timestamps: true }
 );
 
-const setImageURL = (doc) => {
-  // return image baseurl + image name
-  if (doc.image) {
-    const imageUrl = `${process.env.BASE_URL}/categories/${doc.image}`;
-    doc.image = imageUrl;
-  }
-};
+// const setImageURL = (doc) => {
+//   // return image baseurl + image name
+//   if (doc.image) {
+//     const imageUrl = `${process.env.BASE_URL}/categories/${doc.image}`;
+//     doc.image = imageUrl;
+//   }
+// };
 
-// Find All, Find One, Update
-categorySchema.post("init", (doc) => {
-  setImageURL(doc);
-});
+// // Find All, Find One, Update
+// categorySchema.post("init", (doc) => {
+//   setImageURL(doc);
+// });
 
-// Create
-categorySchema.post("save", (doc) => {
-  setImageURL(doc);
-});
+// // Create
+// categorySchema.post("save", (doc) => {
+//   setImageURL(doc);
+// });
 
 const CategoryModel = mongoose.model("Category", categorySchema);
 

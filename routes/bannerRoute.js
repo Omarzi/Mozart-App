@@ -8,7 +8,10 @@ const {
   deleteBanner,
   uploadBannerImage,
   resizeBannerImage,
+  setImageToBody,
 } = require("../services/bannerService");
+
+const { uploadImage, uploadImages, deleteImages } = require("../config/cloudinary");
 
 const authService = require("../services/authService");
 
@@ -21,7 +24,8 @@ router
     authService.protect,
     authService.allowedTo("admin", "manager"),
     uploadBannerImage,
-    resizeBannerImage,
+    // resizeBannerImage,
+    uploadImages('banner'),
     createBanner
   );
 router
@@ -31,12 +35,15 @@ router
     authService.protect,
     authService.allowedTo("admin", "manager"),
     uploadBannerImage,
-    resizeBannerImage,
+    // resizeBannerImage,
+    setImageToBody,
     updateBanner
   )
   .delete(
     authService.protect,
     authService.allowedTo("admin", "manager"),
+    setImageToBody,
+    deleteImages,
     deleteBanner
   );
 

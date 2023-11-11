@@ -7,13 +7,23 @@ const {
 } = require("../utils/validators/brandValidator");
 
 const {
+  uploadImage,
+  uploadImages,
+  deleteImages,
+  deleteImage,
+  updateImage,
+  updateImages,
+} = require("../config/cloudinary");
+
+const {
   getBrands,
   createBrand,
   getBrand,
   updateBrand,
   deleteBrand,
   uploadBrandImage,
-  resizeImage,
+  setImageToBody,
+  // resizeImage,
 } = require("../services/brandService");
 
 const authService = require("../services/authService");
@@ -27,8 +37,9 @@ router
     authService.protect,
     authService.allowedTo("admin", "manager"),
     uploadBrandImage,
-    resizeImage,
+    // resizeImage,
     createBrandValidator,
+    uploadImage('brand'),
     createBrand
   );
 router
@@ -38,14 +49,18 @@ router
     authService.protect,
     authService.allowedTo("admin", "manager"),
     uploadBrandImage,
-    resizeImage,
+    // resizeImage,
     updateBrandValidator,
+    setImageToBody,
+    updateImage,
     updateBrand
   )
   .delete(
     authService.protect,
     authService.allowedTo("admin"),
     deleteBrandValidator,
+    setImageToBody,
+    deleteImage,
     deleteBrand
   );
 

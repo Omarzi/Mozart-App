@@ -15,12 +15,12 @@ exports.createFilterObj = (req, res, next) => {
 // @route   GET /api/v1/reviews
 // @access  Public
 exports.getReviews = asyncHandler(async (req, res, next) => {
-  const reviews = await Review.find().populate("product", "title imageCover");
+  const reviews = await Review.find().populate("product", "title image images");
 
   const responseData = reviews.map((review) => ({
     _id: review._id,
     title: review.product.title,
-    imageCover: review.product.imageCover,
+    image: review.product.image.url,
     ratings: review.ratings,
     user: review.user,
     product: review.product,
@@ -35,7 +35,7 @@ exports.getReviews = asyncHandler(async (req, res, next) => {
       limit: 50,
       numberOfPages: 1,
     },
-    data: responseData,
+    data: reviews,
   };
 
   res.status(200).json(response);

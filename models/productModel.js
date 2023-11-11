@@ -38,11 +38,29 @@ const productSchema = new mongoose.Schema(
     },
     colors: [String],
 
-    imageCover: {
-      type: String,
-      required: [true, "Product Image cover is required"],
+    // imageCover: {
+    //   type: String,
+    //   required: [true, "Product Image cover is required"],
+    // },
+    image: {
+      url: { type: String, required: [true, "image url required"] },
+      imageId: {
+        type: String,
+        required: [true, "image id required"],
+      },
     },
-    images: [String],
+
+    // images: [String],
+    images: [
+      {
+        _id: false,
+        url: { type: String },
+        imageId: {
+          type: String,
+        },
+      },
+    ],
+
     category: {
       type: mongoose.Schema.ObjectId,
       ref: "Category",
@@ -95,30 +113,30 @@ productSchema.pre(/^find/, function (next) {
   next();
 });
 
-const setImageURL = (doc) => {
-  // return image baseurl + image name
-  if (doc.imageCover) {
-    const imageUrl = `${process.env.BASE_URL}/products/${doc.imageCover}`;
-    doc.imageCover = imageUrl;
-  }
-  if (doc.images) {
-    const imageList = [];
-    doc.images.forEach((image) => {
-      const imageUrl = `${process.env.BASE_URL}/products/${image}`;
-      imageList.push(imageUrl);
-    });
-    doc.images = imageList;
-  }
-};
+// const setImageURL = (doc) => {
+//   // return image baseurl + image name
+//   if (doc.imageCover) {
+//     const imageUrl = `${process.env.BASE_URL}/products/${doc.imageCover}`;
+//     doc.imageCover = imageUrl;
+//   }
+//   if (doc.images) {
+//     const imageList = [];
+//     doc.images.forEach((image) => {
+//       const imageUrl = `${process.env.BASE_URL}/products/${image}`;
+//       imageList.push(imageUrl);
+//     });
+//     doc.images = imageList;
+//   }
+// };
 
-// Find All, Find One, Update
-productSchema.post("init", (doc) => {
-  setImageURL(doc);
-});
+// // Find All, Find One, Update
+// productSchema.post("init", (doc) => {
+//   setImageURL(doc);
+// });
 
-// Create
-productSchema.post("save", (doc) => {
-  setImageURL(doc);
-});
+// // Create
+// productSchema.post("save", (doc) => {
+//   setImageURL(doc);
+// });
 
 module.exports = mongoose.model("Product", productSchema);
