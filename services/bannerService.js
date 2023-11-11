@@ -56,7 +56,7 @@ exports.setImageToBody = factory.setImageToBody(Banner);
 // @route   GET /api/v1/banners
 // @access  Public
 // exports.getBanners = factory.getAll(Banner);
-exports.getBanners = asyncHandler(async (req, res, next) => {
+exports.getBanners = asyncHandler (async (req, res, next) => {
   let filter = {};
   if (req.filterObj) {
     filter = req.filterObj;
