@@ -83,13 +83,13 @@ exports.getBanners = asyncHandler(async (req, res, next) => {
     const { _id, images } = documents[0];
 
     const data = {
-        id: _id,
-        images: images.map((image, index) => ({
-          [`banner${index + 1}`]: {
-            url: image.url,
-            imageId: image.imageId,
-          },
-        })),
+      id: _id,
+      images: images.map((image, index) => ({
+        // [`banner${index + 1}`]: {
+        url: image.url,
+        imageId: image.imageId,
+        // },
+      })),
     };
 
     res.status(200).json({ results: 1, paginationResult, data });
