@@ -19,11 +19,11 @@ const multerOptions = () => {
 
   const multerFilter = function (req, file, cb) {
     // image/jpeg
-    if (file.mimetype.startsWith("image")) {
-      cb(null, true);
-    } else {
-      cb(new ApiError(`Only Images allowed`, 400), false);
-    }
+    // if (file.mimetype.startsWith("image")) {
+    cb(null, true);
+    // } else {
+    //   cb(new ApiError(`Only Images allowed`, 400), false);
+    // }
   };
 
   const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
