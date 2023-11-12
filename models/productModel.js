@@ -9,6 +9,8 @@ const productSchema = new mongoose.Schema(
       minlength: [3, "Too short product title"],
       maxlength: [100, "Too long product title"],
     },
+
+    
     slug: {
       type: String,
       required: true,

@@ -11,7 +11,7 @@ const {
   setImageToBody,
 } = require("../services/bannerService");
 
-const { uploadImage, uploadImages, deleteImages } = require("../config/cloudinary");
+const { uploadImages, updateImage, updateImages, deleteImages } = require("../config/cloudinary");
 
 const authService = require("../services/authService");
 
@@ -37,6 +37,8 @@ router
     uploadBannerImage,
     // resizeBannerImage,
     setImageToBody,
+    updateImage,
+    updateImages('banner'),
     updateBanner
   )
   .delete(

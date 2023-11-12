@@ -27,11 +27,13 @@ const {
 const authService = require("../services/authService");
 
 const subCategoriesRoute = require("./subCategoryRoute");
+const productRoute = require("./productRoute");
 
 const router = express.Router();
 
 // Nested route
 router.use("/:categoryId/subcategories", subCategoriesRoute);
+router.use("/:categoryId/products", productRoute);
 
 router
   .route("/")

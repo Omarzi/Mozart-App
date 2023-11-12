@@ -34,7 +34,7 @@ exports.uploadImage = (name) =>
       const uploadOptions = {
         folder: name,
         public_id: filename,
-        allowed_formats: ["jpg", "jpeg", "png", "gif"],
+        allowed_formats: ["jpg", "jpeg", "png", "gif", "avif"],
         transformation: [
           { width: 600, height: 600, crop: "fit" },
           { quality: 95 },
@@ -63,7 +63,7 @@ exports.updateImage = asyncHandler(async (req, res, next) => {
 
     const uploadOptions = {
       public_id: req.image.imageId,
-      allowed_formats: ["jpg", "jpeg", "png", "gif"],
+      allowed_formats: ["jpg", "jpeg", "png", "gif", "avif"],
       transformation: [
         { width: 600, height: 600, crop: "fit" },
         { quality: 90 },
@@ -92,7 +92,7 @@ exports.updateImage = asyncHandler(async (req, res, next) => {
 
       const uploadOptions = {
         public_id: req.image.imageId,
-        allowed_formats: ["jpg", "jpeg", "png", "gif"],
+        allowed_formats: ["jpg", "jpeg", "png", "gif", "avif"],
         transformation: [
           { width: 600, height: 600, crop: "fit" },
           { quality: 90 },
@@ -133,7 +133,7 @@ exports.uploadImages = (name) =>
           const uploadOptions = {
             folder: name,
             public_id: filename,
-            allowed_formats: ["jpg", "jpeg", "png", "gif"],
+            allowed_formats: ["jpg", "jpeg", "png", "gif", "avif"],
             transformation: [
               { width: 600, height: 600, crop: "fit" },
               { quality: 95 },
@@ -176,7 +176,7 @@ exports.updateImages = (name) =>
           const uploadOptions = {
             folder: name,
             public_id: filename,
-            allowed_formats: ["jpg", "jpeg", "png", "gif"],
+            allowed_formats: ["jpg", "jpeg", "png", "gif", "avif"],
             transformation: [
               { width: 600, height: 600, crop: "fit" },
               { quality: 95 },
@@ -208,7 +208,7 @@ exports.updateImages = (name) =>
 
           const uploadOptions = {
             public_id: item.imageId,
-            allowed_formats: ["jpg", "jpeg", "png", "gif"],
+            allowed_formats: ["jpg", "jpeg", "png", "gif", "avif"],
             transformation: [
               { width: 600, height: 600, crop: "fit" },
               { quality: 90 },

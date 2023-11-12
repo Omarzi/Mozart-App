@@ -56,11 +56,18 @@ exports.setImageToBody = factory.setImageToBody(Banner);
 // @route   GET /api/v1/banners
 // @access  Public
 // exports.getBanners = factory.getAll(Banner);
-exports.getBanners = asyncHandler (async (req, res, next) => {
+// let result = {};
+//     for(let index = 0 ; index < documents.length ; index++) {
+//       result[data._id] = {
+
+//       }
+//     }
+exports.getBanners = asyncHandler(async (req, res, next) => {
   let filter = {};
   if (req.filterObj) {
     filter = req.filterObj;
   }
+
   // Build query
   const documentsCounts = await Banner.countDocuments();
   const apiFeatures = new ApiFeatures(Banner.find(filter), req.query)
@@ -69,19 +76,55 @@ exports.getBanners = asyncHandler (async (req, res, next) => {
     .limitFields()
     .sort();
 
-  // Execute query
   const { mongooseQuery, paginationResult } = apiFeatures;
   const documents = await mongooseQuery;
 
-  // Check if documents length is greater than 0
   if (documents.length > 0) {
-    // Return the first document as an object
-    const data = documents[0];
+    const { _id, images } = documents[0];
+
+    const data = {
+        id: _id,
+        images: images.map((image, index) => ({
+          [`banner${index + 1}`]: {
+            url: image.url,
+            imageId: image.imageId,
+          },
+        })),
+    };
+
     res.status(200).json({ results: 1, paginationResult, data });
   } else {
     res.status(200).json({ results: 0, paginationResult, data: null });
   }
 });
+
+// exports.getBanners = asyncHandler (async (req, res, next) => {
+//   let filter = {};
+//   if (req.filterObj) {
+//     filter = req.filterObj;
+//   }
+//   // Build query
+//   const documentsCounts = await Banner.countDocuments();
+//   const apiFeatures = new ApiFeatures(Banner.find(filter), req.query)
+//     .paginate(documentsCounts)
+//     .filter()
+//     .limitFields()
+//     .sort();
+
+//   // Execute query
+//   const { mongooseQuery, paginationResult } = apiFeatures;
+//   const documents = await mongooseQuery;
+
+//   // Check if documents length is greater than 0
+//   if (documents.length > 0) {
+//     // Return the first document as an object
+//     const data = documents;
+
+//     res.status(200).json({ results: 1, paginationResult, data });
+//   } else {
+//     res.status(200).json({ results: 0, paginationResult, data: null });
+//   }
+// });
 
 // @desc    Get specific banner by id
 // @route   GET /api/v1/banners/:id

@@ -20,6 +20,13 @@ exports.uploadProductImages = uploadMixOfImages([
 
 exports.setImageToBody = factory.setImageToBody(Product);
 
+exports.createFilterObject = (req, res, next) => {
+  let filterObject = {};
+  if (req.params.categoryId) filterObject = { category: req.params.categoryId };
+  req.filterObj = filterObject;
+  next();
+};
+
 // exports.resizeProductImages = asyncHandler(async (req, res, next) => {
 //   // console.log(req.files);
 //   //1- Image processing for imageCover
