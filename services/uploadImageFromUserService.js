@@ -5,6 +5,7 @@ const sharp = require("sharp");
 const { uploadMixOfImages } = require("../middlewares/uploadImageMiddleware");
 const factory = require("./handlersFactory");
 const UploadImageDromUser = require("../models/uploadImagesFromUserModel");
+const productModel = require("../models/productModel");
 
 exports.uploadProductImages = uploadMixOfImages([
   {
@@ -41,3 +42,5 @@ exports.getImagesFromUser = factory.getAllImages(UploadImageDromUser);
 // @route   DELETE /api/v1/products/:id
 // @access  Private
 exports.deleteProduct = factory.deleteOne(UploadImageDromUser);
+
+// exports.verifyisproduct = factory.getproductOne(productModel);

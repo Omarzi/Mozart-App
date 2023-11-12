@@ -40,16 +40,16 @@ exports.updateOne = (Model) =>
           (image) => !req.body.imagesIds.includes(image.imageId)
         );
       }
-  
+
       // Add new images using $addToSet to prevent duplicates
       if (req.imagesToStore && req.imagesToStore.length > 0) {
         document.images.push(...req.imagesToStore);
       }
-  
+
       // Save the updated document
       await document.save();
     }
-  
+
     if (req.deleteImages) {
       // Remove images with IDs from req.body.imagesIds
       if (req.body.imageIdsToDelete && req.body.imageIdsToDelete.length > 0) {
@@ -102,37 +102,45 @@ exports.createProduct = (Model) =>
 //************************************************************************************************
 exports.uploadImage = (Model) => async (req, res, next) => {
   try {
+    console.log(req);
     const userId = req.user.id;
+    const _id = req.body.productId;
 
     // Fetch user data based on the user ID
     const user = await User.findById(userId).select("name phone email"); // Add other fields as needed
+    const product = await Product.findById(_id); // Add other fields as needed
 
-    req.body.user = userId;
+    if (!product) {
+      res.status(404).json({ message: "Product not found" });
+    } else {
+      req.body.user = userId;
+      req.body.product = _id;
 
-    const newDoc = await Model.create(req.body);
+      const newDoc = await Model.create(req.body);
 
-    res.status(201).json({
-      status: "success",
-      data: {
-        // image: newDoc.image,
-        image: {
-          url: req.body.image.url,
-          imageId: req.body.image.imageId,
+      res.status(201).json({
+        status: "success",
+        data: {
+          // image: newDoc.image,
+          image: {
+            url: req.body.image.url,
+            imageId: req.body.image.imageId,
+          },
+          nameOfProduct: newDoc.nameOfProduct,
+          user: {
+            id: user._id,
+            name: user.name,
+            phone: user.phone,
+            email: user.email,
+            // Add other user fields as needed
+          },
+          _id: newDoc._id,
+          createdAt: newDoc.createdAt,
+          updatedAt: newDoc.updatedAt,
+          __v: newDoc.__v,
         },
-        nameOfProduct: newDoc.nameOfProduct,
-        user: {
-          id: user._id,
-          name: user.name,
-          phone: user.phone,
-          email: user.email,
-          // Add other user fields as needed
-        },
-        _id: newDoc._id,
-        createdAt: newDoc.createdAt,
-        updatedAt: newDoc.updatedAt,
-        __v: newDoc.__v,
-      },
-    });
+      });
+    }
   } catch (error) {
     next(error);
   }
@@ -176,6 +184,23 @@ exports.getAllImages = (Model, modelName = "") =>
 //********************************
 
 exports.getOne = (Model, populationOpt) =>
+  asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+    // 1) Build query
+    let query = Model.findById(id);
+    if (populationOpt) {
+      query = query.populate(populationOpt);
+    }
+
+    // 1) Execute query
+    const document = await query;
+
+    if (!document) {
+      return next(new ApiError(`No document for this id ${id}`, 404));
+    }
+    res.status(200).json({ data: document });
+  });
+exports.getproductOne = (Model, populationOpt) =>
   asyncHandler(async (req, res, next) => {
     const { id } = req.params;
     // 1) Build query
@@ -336,6 +361,5 @@ exports.setImageToBody = (model) =>
     }
     next();
   });
-
 
 // exports.updateImage = (

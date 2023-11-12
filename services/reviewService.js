@@ -1,6 +1,8 @@
 const asyncHandler = require("express-async-handler");
 const factory = require("./handlersFactory");
 const Review = require("../models/reviewModel");
+const Product = require("../models/productModel");
+const User = require("../models/userModel");
 
 // Nested route
 // GET /api/v1/products/:productId/reviews
@@ -16,7 +18,8 @@ exports.createFilterObj = (req, res, next) => {
 // @access  Public
 exports.getReviews = asyncHandler(async (req, res, next) => {
   const reviews = await Review.find().populate("product", "title image images");
-
+  const revier = await Review.find();
+  console.log(revier);
   const responseData = reviews.map((review) => ({
     _id: review._id,
     title: review.product.title,
@@ -57,7 +60,20 @@ exports.setProductIdAndUserIdToBody = (req, res, next) => {
 // @desc    Create review
 // @route   POST  /api/v1/reviews
 // @access  Private/Protect/User
-exports.createReview = factory.createOne(Review);
+// exports.createReview = factory.createOne(Review);
+exports.createReview = asyncHandler(async (req, res, next) => {
+  const userId = req.body.user;
+  const _id = req.body.product;
+
+  const product = await Product.findById(_id);
+  const hasreview = await Review.find({ user: userId });
+  if (!product && hasreview) {
+    res.status(404).json({ message: "Product not found or you have a review" });
+  } else {
+    const newDoc = await Review.create(req.body);
+    res.status(201).json({ data: newDoc });
+  }
+});
 
 // @desc    Update specific review
 // @route   PUT /api/v1/reviews/:id
