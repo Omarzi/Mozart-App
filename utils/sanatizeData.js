@@ -7,6 +7,7 @@ exports.sanatizeUser = function (user) {
     token: user.token,
     // addresses: user.addresses,
     lat: user.lat,
-    lng: user.lng
+    lng: user.lng,
+    address: user.address,
   };
 };

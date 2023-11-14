@@ -68,6 +68,7 @@ exports.signupUserValidator = [
   // check("zip").notEmpty().withMessage("Zip code required"),
   check("lat").notEmpty().withMessage("Lat is required"),
   check("lng").notEmpty().withMessage("Lng is required"),
+  check("address").notEmpty().withMessage("Address is required"),
 
   validatorMiddleware,
 ];

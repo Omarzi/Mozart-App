@@ -101,6 +101,11 @@ const userSchema = new mongoose.Schema(
       type: Number,
       required: [true, "Lng is required"],
     },
+
+    address: {
+      type: String,
+      required: [true, "Address is required"],
+    }
   },
   { timestamps: true }
 );
