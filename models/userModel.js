@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
-const addressSchema = new mongoose.Schema({
-  alias: String,
-  details: String,
-  phone: String,
-  city: String,
-  postalCode: String,
-});
+// const addressSchema = new mongoose.Schema({
+//   alias: String,
+//   details: String,
+//   phone: String,
+//   city: String,
+//   postalCode: String,
+// });
 
 const userSchema = new mongoose.Schema(
   {
@@ -53,30 +53,30 @@ const userSchema = new mongoose.Schema(
       default: "user",
     },
 
-    street: {
-      type: String,
-      required: [true, "Street is required"],
-    },
+    // street: {
+    //   type: String,
+    //   required: [true, "Street is required"],
+    // },
 
-    apartment: {
-      type: String,
-      required: [true, "Apartment is required"],
-    },
+    // apartment: {
+    //   type: String,
+    //   required: [true, "Apartment is required"],
+    // },
 
-    zip: {
-      type: String,
-      required: [true, "ZIP code is required"],
-    },
+    // zip: {
+    //   type: String,
+    //   required: [true, "ZIP code is required"],
+    // },
 
-    city: {
-      type: String,
-      required: [true, "City is required"],
-    },
+    // city: {
+    //   type: String,
+    //   required: [true, "City is required"],
+    // },
 
-    country: {
-      type: String,
-      required: [true, "Country is required"],
-    },
+    // country: {
+    //   type: String,
+    //   required: [true, "Country is required"],
+    // },
 
     active: {
       type: Boolean,
@@ -90,8 +90,7 @@ const userSchema = new mongoose.Schema(
         ref: "Product",
       },
     ],
-
-    addresses: [addressSchema],
+    // addresses: [addressSchema],
 
     lat: {
       type: Number,
