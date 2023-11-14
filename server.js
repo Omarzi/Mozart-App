@@ -1,5 +1,5 @@
+/* eslint-disable import/no-unresolved */
 const path = require("path");
-
 const express = require("express");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
@@ -15,9 +15,17 @@ const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 
 dotenv.config({ path: "config.env" });
+// eslint-disable-next-line import/no-extraneous-dependencies
+const i18next = require("i18next");
+// eslint-disable-next-line node/no-missing-require, import/no-extraneous-dependencies
+const Backend = require('i18next-fs-backend')
+// eslint-disable-next-line import/no-extraneous-dependencies
+const middleware = require("i18next-http-middleware");
+
 const ApiError = require("./utils/apiError");
 const globalError = require("./middlewares/errorMiddleware");
 const dbConnection = require("./config/database");
+
 // Routes
 const mountRoutes = require("./routes");
 
@@ -34,6 +42,14 @@ app.options("*", cors());
 // Middlewares
 app.use(express.json({ limit: "20kb" }));
 app.use(express.static(path.join(__dirname, "uploads")));
+i18next
+  .use(Backend)
+  .use(middleware.LanguageDetector)
+  .init({
+    fallbacklng: "en",
+    backend: { loadPath: "./locales/{{lng}}/translation.json" },
+  });
+app.use(middleware.handle(i18next));
 
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
@@ -46,10 +62,10 @@ app.use(xss());
 
 // Limit each IP to 100 requests per 'window' (here, per 15 minutes)
 // const limiter = rateLimit({
-  // windowMs: 15 * 60 * 1000,
-  // max: 100,
-  // message:
-    // "Too many accounts created from this IP, please try again after an hour.",
+// windowMs: 15 * 60 * 1000,
+// max: 100,
+// message:
+// "Too many accounts created from this IP, please try again after an hour.",
 // });
 
 // Apply the rate limiting middleware to all requests

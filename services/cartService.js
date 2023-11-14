@@ -66,7 +66,10 @@ exports.addProductToCart = asyncHandler(async (req, res, next) => {
 exports.getLoggedUserCart = asyncHandler(async (req, res, next) => {
   const cart = await Cart.findOne({ user: req.user._id }).populate({
     path: "cartItems.product",
-    select: "title description price image", // Select the fields you want to return
+    select: "title description price image",
+  }).populate({
+    path: "user",
+    select: "name email phone lat lng address", 
   });
 
   if (!cart) {
