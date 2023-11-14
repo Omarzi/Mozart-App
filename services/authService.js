@@ -28,6 +28,8 @@ exports.signup = asyncHandler(async (req, res, next) => {
     zip: req.body.zip,
     city: req.body.city,
     country: req.body.country,
+    lat: req.body.lat,
+    lng: req.body.lng,
   });
 
   // Delete password from response

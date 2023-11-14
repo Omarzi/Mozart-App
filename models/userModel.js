@@ -92,6 +92,16 @@ const userSchema = new mongoose.Schema(
     ],
 
     addresses: [addressSchema],
+
+    lat: {
+      type: Number,
+      required: [true, "Lat is required"],
+    },
+
+    lng: {
+      type: Number,
+      required: [true, "Lng is required"],
+    },
   },
   { timestamps: true }
 );

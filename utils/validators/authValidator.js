@@ -60,12 +60,14 @@ exports.signupUserValidator = [
   check("street").notEmpty().withMessage("Street address required"),
 
   check("apartment").notEmpty().withMessage("Apartment number required"),
-  
+
   check("city").notEmpty().withMessage("City name required"),
-  
+
   check("country").notEmpty().withMessage("Country name required"),
 
   check("zip").notEmpty().withMessage("Zip code required"),
+  check("lat").notEmpty().withMessage("Lat is required"),
+  check("lng").notEmpty().withMessage("Lng is required"),
 
   validatorMiddleware,
 ];
