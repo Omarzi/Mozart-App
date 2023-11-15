@@ -59,11 +59,10 @@ exports.createUserValidator = [
 
   check("role").optional(),
 
-  check("street").notEmpty().withMessage("Street address required"),
+  check("lat").notEmpty().withMessage("Lat required"),
+  check("lng").notEmpty().withMessage("Lng required"),
+  check("address").notEmpty().withMessage("address required"),
 
-  check("apartment").notEmpty().withMessage("Apartment number required"),
-
-  check("zip").notEmpty().withMessage("Zip code required"),
 
   validatorMiddleware,
 ];

@@ -42,20 +42,21 @@ router.delete("/deleteMe", deleteLoggedUserData);
 router.post("/addMe", activeLoggedUserData);
 
 // Admin
-router.use(authService.allowedTo("admin", "manager"));
+// router.use();
 router
   .route("/")
-  .get(getUsers)
-  .post(uploadUserImage, resizeImage, createUserValidator, createUser);
+  .get(getUsers, authService.allowedTo("user", "manager", "admin"))
+  .post(uploadUserImage, resizeImage, createUserValidator, authService.allowedTo("admin", "manager"), createUser);
 router.put(
   "/changePassword/:id",
   changeUserPasswordValidator,
+  authService.allowedTo("admin", "manager"),
   changeUserPassword
 );
 router
   .route("/:id")
-  .get(getUserValidator, getUser)
-  .put(uploadUserImage, resizeImage, updateUserValidator, updateUser)
-  .delete(deleteUserValidator, deleteUser);
+  .get(getUserValidator, authService.allowedTo("admin", "manager"), getUser)
+  .put(uploadUserImage, resizeImage, updateUserValidator, authService.allowedTo("admin", "manager"), updateUser)
+  .delete(deleteUserValidator, authService.allowedTo("admin", "manager"), deleteUser);
 
 module.exports = router;
