@@ -26,7 +26,7 @@ router
   .get(createFilterObj, getReviews)
   .post(
     authService.protect,
-    authService.allowedTo('user'),
+    authService.allowedTo("user-wholesale", "user-normal"),
     setProductIdAndUserIdToBody,
     createReviewValidator,
     createReview
@@ -36,13 +36,13 @@ router
   .get(getReviewValidator, getReview)
   .put(
     authService.protect,
-    authService.allowedTo('user'),
+    authService.allowedTo("user-wholesale", "user-normal"),
     updateReviewValidator,
     updateReview
   )
   .delete(
     authService.protect,
-    authService.allowedTo('user', 'manager', 'admin'),
+    authService.allowedTo("user-wholesale", "user-normal", 'manager', 'admin'),
     deleteReviewValidator,
     deleteReview
   );

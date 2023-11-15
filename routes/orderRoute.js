@@ -7,6 +7,7 @@ const {
   filterOrdersForLoggedUser,
   updateOrderToPay,
   updateOrderToDelivered,
+  changeStatusOrder,
 } = require("../services/orderService");
 
 const authService = require("../services/authService");
@@ -15,10 +16,15 @@ const router = express.Router();
 
 router.use(authService.protect);
 
-router.route("/:cartId").post(authService.allowedTo("user"), createCashOrder);
+router
+  .route("/:cartId")
+  .post(
+    authService.allowedTo("user-wholesale", "user-normal"),
+    createCashOrder
+  );
 router.get(
   "/",
-  authService.allowedTo("admin", "manager", "user"),
+  authService.allowedTo("admin", "manager", "user-wholesale", "user-normal"),
   filterOrdersForLoggedUser,
   findAllOrders
 );
@@ -33,6 +39,11 @@ router.put(
   "/:id/deliver",
   authService.allowedTo("admin", "manager"),
   updateOrderToDelivered
+);
+router.put(
+  "/:id/changeOrderStatus",
+  authService.allowedTo("admin", "manager"),
+  changeStatusOrder 
 );
 
 module.exports = router;

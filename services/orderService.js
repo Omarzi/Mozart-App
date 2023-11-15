@@ -32,12 +32,20 @@ exports.createCashOrder = asyncHandler(async (req, res, next) => {
   const totalOrderPrice = cartPrice + taxPrice + shippingPrice;
 
   // 3) Create order with default payment method "cash"
+  if (req.user.role === "user-wholesale") {
+    req.body.status = "confirm";
+  } else if (req.user.role === "user-normal") {
+    req.body.status = "in-progress";
+  } else {
+    req.body.status = "declined";
+  }
   const order = await Order.create({
-    user: req.user._id,
+    user: req.user,
     cartItems: cart.cartItems,
-    shippingAddress: req.body.shippingAddress,
+    // shippingAddress: req.body.shippingAddress,
+    branchId: req.body.branchId,
     totalOrderPrice,
-    
+    status: req.body.status,
   });
 
   // 4) After creating order, decrement product quantity, icreament product sold
@@ -59,7 +67,8 @@ exports.createCashOrder = asyncHandler(async (req, res, next) => {
 
 // Filter Object
 exports.filterOrdersForLoggedUser = asyncHandler(async (req, res, next) => {
-  if (req.user.role === "user") req.filterObj = { user: req.user._id };
+  if (req.user.role === "user-wholesale" || req.user.role === "user-normal")
+    req.filterObj = { user: req.user };
   next();
 });
 
@@ -100,22 +109,43 @@ exports.updateOrderToPay = asyncHandler(async (req, res, next) => {
 // @route   PUT /api/v1/order/:id/deliverer
 // @access  Prived/Protected/Admin-Manager
 exports.updateOrderToDelivered = asyncHandler(async (req, res, next) => {
-    const order = await Order.findById(req.params.id);
-    if (!order) {
-      return next(
-        new ApiError(
-          `There is no such a order with this id :${req.params.id}`,
-          404
-        )
-      );
-    }
-  
-    // Update order to paid
-    order.isDelivered = true;
-    order.deliveredAt = Date.now();
-  
-    const updatedOrder = await order.save();
-  
-    res.status(200).json({ status: "success", data: updatedOrder });
-  });
-  
+  const order = await Order.findById(req.params.id);
+  if (!order) {
+    return next(
+      new ApiError(
+        `There is no such a order with this id :${req.params.id}`,
+        404
+      )
+    );
+  }
+
+  // Update order to paid
+  order.isDelivered = true;
+  order.deliveredAt = Date.now();
+
+  const updatedOrder = await order.save();
+
+  res.status(200).json({ status: "success", data: updatedOrder });
+});
+
+// @desc    Update order delivered status
+// @route   PUT /api/v1/order/:id/changeOrderStatus
+// @access  Prived/Protected/Admin-Manager
+exports.changeStatusOrder = asyncHandler(async (req, res, next) => {
+  const order = await Order.findById(req.params.id);
+  if (!order) {
+    return next(
+      new ApiError(
+        `There is no such a order with this id :${req.params.id}`,
+        404
+      )
+    );
+  }
+
+  order.status = "confirm";
+  order.accepteddAt = Date.now();
+
+  const updatedOrder = await order.save();
+
+  res.status(200).json({ status: "success", data: updatedOrder });
+});

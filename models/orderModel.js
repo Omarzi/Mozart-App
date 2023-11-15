@@ -34,11 +34,17 @@ const orderSchema = new mongoose.Schema(
       type: Number,
     },
 
-    shippingAddress: {
-      details: String,
-      phone: String,
-      city: String,
-      postalCode: String,
+    // shippingAddress: {
+    //   details: String,
+    //   phone: String,
+    //   city: String,
+    //   postalCode: String,
+    // },
+
+    branchId: {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
+      required: [true, "Branch Name is required"],
     },
 
     paymentMethod: {
@@ -61,6 +67,13 @@ const orderSchema = new mongoose.Schema(
     managerId: mongoose.Schema.ObjectId,
 
     deliveredAt: Date,
+
+    status: {
+      type: String,
+      enum: ["confirm", "in-progress", "declined"],
+    },
+
+    accepteddAt: Date,
   },
   { timestamp: true }
 );
@@ -68,11 +81,16 @@ const orderSchema = new mongoose.Schema(
 orderSchema.pre(/^find/, function (next) {
   this.populate({
     path: "user",
-    select: "name profileImg email phone",
-  }).populate({
-    path: "cartItems.product",
-    select: "title imageCover",
-  });
+    select: "name profileImg email phone role address lat lng",
+  })
+    .populate({
+      path: "cartItems.product",
+      select: "title imageCover",
+    })
+    .populate({
+      path: "branchId",
+      select: "name profileImg email phone role address lat lng",
+    });
 
   next();
 });

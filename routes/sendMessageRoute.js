@@ -17,6 +17,6 @@ router
     getAllMessages
   )
   
-router.route('/:id').post(authService.protect, authService.allowedTo("user"), createMessage);
+router.route('/:id').post(authService.protect, authService.allowedTo("user-wholesale", "user-normal"), createMessage);
 
 module.exports = router;

@@ -55,7 +55,11 @@ exports.signupUserValidator = [
 
   check("profileImg").optional(),
 
-  check("role").optional(),
+  check("role")
+    .notEmpty()
+    .withMessage("Role is required")
+    .isIn(["user-wholesale", "user-normal"])
+    .withMessage("Select your role"),
 
   // check("street").notEmpty().withMessage("Street address required"),
 

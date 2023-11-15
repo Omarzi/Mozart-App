@@ -26,11 +26,11 @@ router
   .route("/:id")
   .post(
     authService.protect,
-    authService.allowedTo("user"),
+    authService.allowedTo("user-wholesale", "user-normal"),
     uploadProductImages,
     // resizeProductImages,
     updateProductValidator,
-    uploadImage("user"),
+    uploadImage("user-wholesale", "user-normal"),
     uploadImageFromUser
   )
   .delete(

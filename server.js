@@ -16,11 +16,11 @@ const xss = require("xss-clean");
 
 dotenv.config({ path: "config.env" });
 // eslint-disable-next-line import/no-extraneous-dependencies
-const i18next = require("i18next");
-// eslint-disable-next-line node/no-missing-require, import/no-extraneous-dependencies
-const Backend = require('i18next-fs-backend')
-// eslint-disable-next-line import/no-extraneous-dependencies
-const middleware = require("i18next-http-middleware");
+// const i18next = require("i18next");
+// // eslint-disable-next-line node/no-missing-require, import/no-extraneous-dependencies
+// const Backend = require('i18next-fs-backend')
+// // eslint-disable-next-line import/no-extraneous-dependencies
+// const middleware = require("i18next-http-middleware");
 
 const ApiError = require("./utils/apiError");
 const globalError = require("./middlewares/errorMiddleware");
@@ -42,14 +42,14 @@ app.options("*", cors());
 // Middlewares
 app.use(express.json({ limit: "20kb" }));
 app.use(express.static(path.join(__dirname, "uploads")));
-i18next
-  .use(Backend)
-  .use(middleware.LanguageDetector)
-  .init({
-    fallbacklng: "en",
-    backend: { loadPath: "./locales/{{lng}}/translation.json" },
-  });
-app.use(middleware.handle(i18next));
+// i18next
+//   .use(Backend)
+//   .use(middleware.LanguageDetector)
+//   .init({
+//     fallbacklng: "en",
+//     backend: { loadPath: "./locales/{{lng}}/translation.json" },
+//   });
+// app.use(middleware.handle(i18next));
 
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));

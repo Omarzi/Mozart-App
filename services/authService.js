@@ -17,6 +17,9 @@ const User = require("../models/userModel");
 // @access  Public
 exports.signup = asyncHandler(async (req, res, next) => {
   // 1) Create User
+  if (req.body.role === "manager" || req.body.role === "admin") {
+    return next(new ApiError("You must be a manager or a admin.", 400));
+  }
   const user = await User.create({
     name: req.body.name,
     email: req.body.email,
@@ -31,6 +34,7 @@ exports.signup = asyncHandler(async (req, res, next) => {
     lat: req.body.lat,
     lng: req.body.lng,
     address: req.body.address,
+    role: req.body.role,
   });
 
   // Delete password from response
