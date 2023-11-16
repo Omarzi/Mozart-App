@@ -64,13 +64,15 @@ exports.addProductToCart = asyncHandler(async (req, res, next) => {
 // @route   GET /api/v1/cart
 // @access  Private/Protected/User
 exports.getLoggedUserCart = asyncHandler(async (req, res, next) => {
-  const cart = await Cart.findOne({ user: req.user._id }).populate({
-    path: "cartItems.product",
-    select: "title description price image",
-  }).populate({
-    path: "user",
-    select: "name email phone lat lng address", 
-  });
+  const cart = await Cart.findOne({ user: req.user._id })
+    .populate({
+      path: "cartItems.product",
+      select: "title description price image",
+    })
+    .populate({
+      path: "user",
+      select: "name email phone lat lng address role",
+    });
 
   if (!cart) {
     return res.status(200).json({
