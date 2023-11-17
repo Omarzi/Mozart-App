@@ -61,15 +61,7 @@ exports.createProductValidator = [
     })
     .bail(),
 
-  check("images")
-    .optional()
-    .custom((value, { req }) => {
-      if (!req.files.images) {
-        throw new Error("Images is empty");
-      }
-      return true;
-    })
-    .bail(),
+  check("images").optional().bail(),
   // check("imageCover")
   //   .notEmpty()
   //   .withMessage("Product imageCover is required"),

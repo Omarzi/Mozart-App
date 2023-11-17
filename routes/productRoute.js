@@ -45,7 +45,7 @@ router
     uploadProductImages,
     createProductValidator,
     uploadImage("product"),
-    uploadImages("product"),
+    // uploadImages("product"),
     createProduct
   );
 router
