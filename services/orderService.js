@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable array-callback-return */
 const asyncHandler = require("express-async-handler");
 const factory = require("./handlersFactory");
 const ApiErrot = require("../utils/apiFeatures");
@@ -6,6 +8,8 @@ const Order = require("../models/orderModel");
 const Product = require("../models/productModel");
 const Cart = require("../models/cartModel");
 const ApiError = require("../utils/apiError");
+const ApiFeatures = require("../utils/apiFeatures");
+const User = require("../models/userModel");
 
 // @desc    Create cash order
 // @route   POST /api/v1/orders/:cartId
@@ -66,16 +70,92 @@ exports.createCashOrder = asyncHandler(async (req, res, next) => {
 });
 
 // Filter Object
-exports.filterOrdersForLoggedUser = asyncHandler(async (req, res, next) => {
-  if (req.user.role === "user-wholesale" || req.user.role === "user-normal")
-    req.filterObj = { user: req.user };
-  next();
-});
+// exports.filterOrdersForLoggedUser = asyncHandler(async (req, res, next) => {
+//   //   if (req.params === "user-wholesale" || req.params === "user-normal")
+//   //     req.userType = req.params;
+//   //   next();
+//   // });
+//   const roleParam = req.query.role;
+//   if (
+//     roleParam &&
+//     (roleParam === "user-wholesale" || roleParam === "user-normal")
+//   ) {
+//     req.filterObj = { "user.role": roleParam }; // Assuming user is a field in your Order model
+//   } else if (
+//     req.user.role === "user-wholesale" ||
+//     req.user.role === "user-normal"
+//   ) {
+//     req.filterObj = { "user.role": req.user.role };
+//   }
 
+//   next();
+// });
 // @desc    Get all order
 // @route   POST /api/v1/orders
 // @access  Prived/Protected/User-Admin-Manager
-exports.findAllOrders = factory.getAll(Order);
+// exports.findAllOrders = factory.getAll(Order);
+exports.findAllOrdersInOneBranch = asyncHandler(async (req, res, next) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const type = req.query.role;
+    const branchId = req.query.branchId;
+
+    const order = await Order.find();
+    let filtered;
+    console.log(req.query);
+    if (type || branchId) {
+      // eslint-disable-next-line no-shadow
+      filtered = order.filter((order) => order.user.role === type && order.branchId._id.toString() === branchId);
+    }
+
+    // console.log(order[0].branchId._id);
+    // if (branchId) {
+    //   // eslint-disable-next-line no-shadow
+    //   filtered = order.filter((order) => order.branchId._id.toString() === branchId);
+    // }
+
+    return res.status(200).json({ success: true, data: filtered || order });
+  } catch (e) {
+    throw e;
+  }
+});
+
+exports.findAllOrdersInAdmin = asyncHandler(async (req, res, next) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const type = req.query.role;
+
+    const order = await Order.find();
+    let filtered;
+    console.log(req.query);
+    if (type) {
+      // eslint-disable-next-line no-shadow
+      filtered = order.filter((order) => order.user.role === type);
+    }
+
+    // console.log(order[0].branchId._id);
+    // if (branchId) {
+    //   // eslint-disable-next-line no-shadow
+    //   filtered = order.filter((order) => order.branchId._id.toString() === branchId);
+    // }
+
+    return res.status(200).json({ success: true, data: filtered || order });
+  } catch (e) {
+    throw e;
+  }
+});
+
+exports.findUserOrder = asyncHandler(async (req, res, next) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const userId = req.user.id;
+    const order = await Order.find({ user: userId });
+
+    return res.status(200).json({ success: true, data: order });
+  } catch (e) {
+    throw e;
+  }
+});
 
 // @desc    Get specific order
 // @route   POST /api/v1/order/:orderId

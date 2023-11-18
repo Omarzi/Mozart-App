@@ -2,12 +2,15 @@ const express = require("express");
 
 const {
   createCashOrder,
-  findAllOrders,
+  findAllOrdersInOneBranch,
   findSpecificOrder,
-  filterOrdersForLoggedUser,
+  // filterOrdersForLoggedUser,
   updateOrderToPay,
   updateOrderToDelivered,
   changeStatusOrder,
+  findUserOrder,
+  findAllOrdersInAdmin,
+  findAllBranchOrders,
 } = require("../services/orderService");
 
 const authService = require("../services/authService");
@@ -23,11 +26,19 @@ router
     createCashOrder
   );
 router.get(
-  "/",
-  authService.allowedTo("admin", "manager", "user-wholesale", "user-normal"),
-  filterOrdersForLoggedUser,
-  findAllOrders
+  "/branch",
+  authService.allowedTo("manager"),
+  // filterOrdersForLoggedUser,
+  findAllOrdersInOneBranch
 );
+router.get("/", authService.allowedTo("admin"), findAllOrdersInAdmin);
+
+router.get(
+  "/myOrders",
+  authService.allowedTo("user-wholesale", "user-normal"),
+  findUserOrder
+);
+
 router.get("/:id", findSpecificOrder);
 
 router.put(
@@ -43,7 +54,7 @@ router.put(
 router.put(
   "/:id/changeOrderStatus",
   authService.allowedTo("admin", "manager"),
-  changeStatusOrder 
+  changeStatusOrder
 );
 
 module.exports = router;
