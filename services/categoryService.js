@@ -4,8 +4,8 @@ const sharp = require("sharp");
 const { v4: uuidv4 } = require("uuid");
 const asyncHandler = require("express-async-handler");
 
-const factory = require("./handlersFactory"),
-  getAll = require("./getAll");
+const factory = require("./handlersFactory");
+  // getAll = require("./getAll");
 const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
 const Category = require("../models/categoryModel");
 
@@ -36,7 +36,7 @@ exports.setImageToBody = factory.setImageToBody(Category);
 // @desc    Get list of categories
 // @route   GET /api/v1/categoris
 // @access  Public
-exports.getCategories = getAll.getAll(Category);
+exports.getCategories = factory.getAll(Category);
 
 // @desc    Get sepecific category by id
 // @route   GET /api/v1/categoris/:id
