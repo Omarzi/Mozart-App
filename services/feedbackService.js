@@ -27,7 +27,7 @@ const getUserData = async (req, res, next) => {
 router.post(
   "/:id",
   authService.protect,
-  authService.allowedTo("user"),
+  authService.allowedTo("user-wholesale", "user-normal"),
   getUserData,
   async (req, res) => {
     try {
