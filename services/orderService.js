@@ -143,8 +143,7 @@ exports.findAllOrdersInOneBranch = asyncHandler(async (req, res, next) => {
     if (type || branchId) {
       filtered = orders.filter(
         (order) =>
-          order.user.role === type &&
-          order.branchId._id.toString() === branchId
+          order.user.role === type && order.branchId._id.toString() === branchId
       );
     }
 
@@ -178,6 +177,7 @@ exports.findAllOrdersInOneBranch = asyncHandler(async (req, res, next) => {
 //     throw e;
 //   }
 // });
+
 exports.findAllOrdersInAdmin = asyncHandler(async (req, res, next) => {
   try {
     const type = req.query.role;
