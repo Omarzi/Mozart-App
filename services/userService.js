@@ -36,7 +36,7 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
 // @desc    Get list of user
 // @route   GET /api/v1/users
 // @access  Private/Admin
-exports.getUsers = getAll.getAll(User);
+exports.getUsers = factory.getAll(User);
 
 // @desc    Get sepecific user by id
 // @route   GET /api/v1/users/:id
