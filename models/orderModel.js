@@ -74,6 +74,11 @@ const orderSchema = new mongoose.Schema(
     },
 
     accepteddAt: Date,
+
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
   { timestamp: true }
 );

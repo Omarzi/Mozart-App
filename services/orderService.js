@@ -94,54 +94,117 @@ exports.createCashOrder = asyncHandler(async (req, res, next) => {
 // @route   POST /api/v1/orders
 // @access  Prived/Protected/User-Admin-Manager
 // exports.findAllOrders = factory.getAll(Order);
+// exports.findAllOrdersInOneBranch = asyncHandler(async (req, res, next) => {
+//   // eslint-disable-next-line no-useless-catch
+//   try {
+//     const type = req.query.role;
+//     const branchId = req.query.branchId;
+
+//     const order = await Order.find();
+//     let filtered;
+//     console.log(req.query);
+//     if (type || branchId) {
+//       // eslint-disable-next-line no-shadow
+//       filtered = order.filter((order) => order.user.role === type && order.branchId._id.toString() === branchId);
+//     }
+
+//     // console.log(order[0].branchId._id);
+//     // if (branchId) {
+//     //   // eslint-disable-next-line no-shadow
+//     //   filtered = order.filter((order) => order.branchId._id.toString() === branchId);
+//     // }
+
+//     return res.status(200).json({ success: true, data: filtered || order });
+//   } catch (e) {
+//     throw e;
+//   }
+// });
 exports.findAllOrdersInOneBranch = asyncHandler(async (req, res, next) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const type = req.query.role;
     const branchId = req.query.branchId;
 
-    const order = await Order.find();
+    const orders = await Order.find()
+      .populate({
+        path: "user",
+        select: "name profileImg email phone role address lat lng",
+      })
+      .populate({
+        path: "cartItems.product",
+        select: "title image",
+      })
+      .populate({
+        path: "branchId",
+        select: "name profileImg email phone role address lat lng",
+      })
+      .sort({ createdAt: -1 }); // Sort by createdAt field in descending order
+
     let filtered;
-    console.log(req.query);
     if (type || branchId) {
-      // eslint-disable-next-line no-shadow
-      filtered = order.filter((order) => order.user.role === type && order.branchId._id.toString() === branchId);
+      filtered = orders.filter(
+        (order) =>
+          order.user.role === type &&
+          order.branchId._id.toString() === branchId
+      );
     }
 
-    // console.log(order[0].branchId._id);
-    // if (branchId) {
-    //   // eslint-disable-next-line no-shadow
-    //   filtered = order.filter((order) => order.branchId._id.toString() === branchId);
-    // }
-
-    return res.status(200).json({ success: true, data: filtered || order });
-  } catch (e) {
-    throw e;
+    return res.status(200).json({ success: true, data: filtered || orders });
+  } catch (error) {
+    return next(error);
   }
 });
 
+// exports.findAllOrdersInAdmin = asyncHandler(async (req, res, next) => {
+//   // eslint-disable-next-line no-useless-catch
+//   try {
+//     const type = req.query.role;
+
+//     const order = await Order.find();
+//     let filtered;
+//     console.log(req.query);
+//     if (type) {
+//       // eslint-disable-next-line no-shadow
+//       filtered = order.filter((order) => order.user.role === type);
+//     }
+
+//     // console.log(order[0].branchId._id);
+//     // if (branchId) {
+//     //   // eslint-disable-next-line no-shadow
+//     //   filtered = order.filter((order) => order.branchId._id.toString() === branchId);
+//     // }
+
+//     return res.status(200).json({ success: true, data: filtered || order });
+//   } catch (e) {
+//     throw e;
+//   }
+// });
 exports.findAllOrdersInAdmin = asyncHandler(async (req, res, next) => {
-  // eslint-disable-next-line no-useless-catch
   try {
     const type = req.query.role;
 
-    const order = await Order.find();
+    const orders = await Order.find()
+      .populate({
+        path: "user",
+        select: "name profileImg email phone role address lat lng",
+      })
+      .populate({
+        path: "cartItems.product",
+        select: "title image",
+      })
+      .populate({
+        path: "branchId",
+        select: "name profileImg email phone role address lat lng",
+      })
+      .sort({ createdAt: -1 }); // Sort by createdAt field in descending order
+
     let filtered;
-    console.log(req.query);
     if (type) {
-      // eslint-disable-next-line no-shadow
-      filtered = order.filter((order) => order.user.role === type);
+      filtered = orders.filter((order) => order.user.role === type);
     }
 
-    // console.log(order[0].branchId._id);
-    // if (branchId) {
-    //   // eslint-disable-next-line no-shadow
-    //   filtered = order.filter((order) => order.branchId._id.toString() === branchId);
-    // }
-
-    return res.status(200).json({ success: true, data: filtered || order });
-  } catch (e) {
-    throw e;
+    return res.status(200).json({ success: true, data: filtered || orders });
+  } catch (error) {
+    return next(error);
   }
 });
 
