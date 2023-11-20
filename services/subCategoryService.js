@@ -1,4 +1,5 @@
-const factory = require("./handlersFactory");
+const factory = require("./handlersFactory"),
+  getAll = require("./getAll");
 const SubCategory = require("../models/subCategoryModel");
 
 exports.setCategoryIdToBody = (req, res, next) => {
@@ -24,7 +25,7 @@ exports.createSubCategory = factory.createOne(SubCategory);
 // @desc    Get list of subcategories
 // @route   GET /api/v1/subcategories
 // @access  Public
-exports.getSubCategories = factory.getAll(SubCategory);
+exports.getSubCategories = getAll.getAll(SubCategory);
 
 // @desc    Get sepecific subcategory by id
 // @route   GET /api/v1/subcategory/:id

@@ -5,7 +5,8 @@ const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const { v4: uuidv4 } = require("uuid");
 
-const factory = require("./handlersFactory");
+const factory = require("./handlersFactory"),
+  getAll = require("./getAll");
 const ApiError = require("../utils/apiError");
 const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
 const createToken = require("../utils/createToken");
@@ -35,7 +36,7 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
 // @desc    Get list of user
 // @route   GET /api/v1/users
 // @access  Private/Admin
-exports.getUsers = factory.getAll(User);
+exports.getUsers = getAll.getAll(User);
 
 // @desc    Get sepecific user by id
 // @route   GET /api/v1/users/:id

@@ -63,7 +63,6 @@ exports.createUserValidator = [
   check("lng").notEmpty().withMessage("Lng required"),
   check("address").notEmpty().withMessage("address required"),
 
-
   validatorMiddleware,
 ];
 
@@ -96,19 +95,20 @@ exports.updateUserValidator = [
       })
     ),
 
-  check("phone").notEmpty()
-  .withMessage("Phone number required")
+  check("phone")
+    .notEmpty()
+    .withMessage("Phone number required")
     .isMobilePhone(["ar-EG", "ar-SA"])
     .withMessage("Invalid phone number only accept Egy and SA phone numbers"),
 
   check("profileImg").optional(),
   check("role").optional(),
 
-  check("street").notEmpty().withMessage("Street address required"),
+  check("lat").notEmpty().withMessage("lat required"),
 
-  check("apartment").notEmpty().withMessage("Apartment number required"),
+  check("lng").notEmpty().withMessage("lng required"),
 
-  check("zip").notEmpty().withMessage("Zip code required"),
+  check("address").notEmpty().withMessage("address required"),
 
   validatorMiddleware,
 ];
@@ -175,8 +175,9 @@ exports.updateLoggedUserValidator = [
       })
     ),
 
-  check("phone").notEmpty()
-  .withMessage("Phone number required")
+  check("phone")
+    .notEmpty()
+    .withMessage("Phone number required")
     .isMobilePhone(["ar-EG", "ar-SA"])
     .withMessage("Invalid phone number only accept Egy and SA phone numbers"),
 

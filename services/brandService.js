@@ -3,7 +3,8 @@ const sharp = require("sharp");
 const asyncHandler = require("express-async-handler");
 const { v4: uuidv4 } = require("uuid");
 
-const factory = require("./handlersFactory");
+const factory = require("./handlersFactory"),
+  getAll = require("./getAll");
 const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
 const Brand = require("../models/brandModel");
 
@@ -31,7 +32,7 @@ exports.resizeImage = asyncHandler(async (req, res, next) => {
 // @desc    Get list of brands
 // @route   GET /api/v1/brands
 // @access  Public
-exports.getBrands = factory.getAll(Brand);
+exports.getBrands = getAll.getAll(Brand);
 
 // @desc    Get sepecific brand by id
 // @route   GET /api/v1/brands/:id

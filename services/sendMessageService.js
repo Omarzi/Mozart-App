@@ -1,4 +1,5 @@
-const factory = require("./handlersFactory");
+const factory = require("./handlersFactory"),
+  getAll = require("./getAll");
 
 const SendMessage = require("../models/sendMessageModel");
 
@@ -7,4 +8,4 @@ const SendMessage = require("../models/sendMessageModel");
 // @access  Private
 exports.createMessage = factory.createOne(SendMessage);
 
-exports.getAllMessages = factory.getAll(SendMessage);
+exports.getAllMessages = getAll.getAll(SendMessage);

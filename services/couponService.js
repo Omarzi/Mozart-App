@@ -1,10 +1,11 @@
-const factory = require("./handlersFactory");
+const factory = require("./handlersFactory"),
+  getAll = require("./getAll");
 const Coupon = require("../models/couponModel");
 
 // @desc    Get list of coupon
 // @route   GET /api/v1/coupons
 // @access  Private/Admin-Manager
-exports.getCoupons = factory.getAll(Coupon);
+exports.getCoupons = getAll.getAll(Coupon);
 
 // @desc    Get sepecific coupon by id
 // @route   GET /api/v1/coupons/:id
