@@ -120,7 +120,7 @@ exports.getBanners = asyncHandler(async (req, res, next) => {
     // Return the first document as an object
     const data = documents;
 
-    res.status(200).json({ results: 1, paginationResult, data });
+    res.status(200).json({ results: 1, paginationResult, data: data[0] });
   } else {
     res.status(200).json({ results: 0, paginationResult, data: {} });
   }
