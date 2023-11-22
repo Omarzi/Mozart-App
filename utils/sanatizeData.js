@@ -5,6 +5,7 @@ exports.sanatizeUser = function (user) {
     email: user.email,
     role: user.role,
     token: user.token,
+    phone: user.phone,
     // addresses: user.addresses,
     lat: user.lat,
     lng: user.lng,

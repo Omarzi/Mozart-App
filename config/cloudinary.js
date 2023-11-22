@@ -118,10 +118,11 @@ exports.uploadImages = (name) =>
   asyncHandler(async (req, res, next) => {
     if (req.files) {
       const { images } = req.files;
+      // console.log(images);
       const uploadedImages = [];
 
       // Use Promise.all to upload images in parallel
-      await Promise.all(
+     await Promise.all(
         images.map(async (element) => {
           const imageToUri = await parser.format(
             path.extname(element.originalname).toString(),
@@ -136,6 +137,7 @@ exports.uploadImages = (name) =>
             allowed_formats: ["jpg", "jpeg", "png", "gif", "avif"],
             transformation: [
               { width: 600, height: 600, crop: "fit" },
+              // { width: 2000, height: 1333, crop: "fit" },
               { quality: 95 },
             ],
           };
@@ -149,11 +151,13 @@ exports.uploadImages = (name) =>
           const imageId = uploadedImage.public_id;
           const image = { url: url, imageId: imageId };
           uploadedImages.push(image);
+          console.log(uploadedImage)
         })
-      );
+     );
 
       req.body.images = uploadedImages;
     }
+    // console.log(req.body.images);
     next();
   });
 

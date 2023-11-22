@@ -50,8 +50,10 @@ exports.signupUserValidator = [
   check("phone")
     .notEmpty()
     .withMessage("Phone number required")
-    .isMobilePhone(["ar-EG", "ar-SA"])
-    .withMessage("Invalid phone number only accept Egy and SA phone numbers"),
+    .isMobilePhone(["ar-EG", "ar-SA", "ar-LB"])
+    .withMessage(
+      "Invalid phone number only accept Egy and SA and LB phone numbers"
+    ),
 
   check("profileImg").optional(),
 

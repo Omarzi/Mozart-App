@@ -4,7 +4,7 @@ const bannerSchema = new mongoose.Schema(
   {
     images: [
       {
-        _id: false,
+        // _id: false,
         url: { type: String },
         imageId: {
           type: String,

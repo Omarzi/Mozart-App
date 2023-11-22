@@ -11,7 +11,7 @@ const Banner = require("../models/bannerModel");
 exports.uploadBannerImage = uploadMixOfImages([
   {
     name: "images",
-    maxCount: 5,
+    maxCount: 7,
   },
 ]);
 
@@ -62,43 +62,8 @@ exports.setImageToBody = factory.setImageToBody(Banner);
 
 //       }
 //     }
-exports.getBanners = asyncHandler(async (req, res, next) => {
-  let filter = {};
-  if (req.filterObj) {
-    filter = req.filterObj;
-  }
 
-  // Build query
-  const documentsCounts = await Banner.countDocuments();
-  const apiFeatures = new ApiFeatures(Banner.find(filter), req.query)
-    .paginate(documentsCounts)
-    .filter()
-    .limitFields()
-    .sort();
-
-  const { mongooseQuery, paginationResult } = apiFeatures;
-  const documents = await mongooseQuery;
-
-  if (documents.length > 0) {
-    const { _id, images } = documents[0];
-
-    const data = {
-      id: _id,
-      images: images.map((image, index) => ({
-        // [`banner${index + 1}`]: {
-        url: image.url,
-        imageId: image.imageId,
-        // },
-      })),
-    };
-
-    res.status(200).json({ results: 1, paginationResult, data });
-  } else {
-    res.status(200).json({ results: 0, paginationResult, data: null });
-  }
-});
-
-// exports.getBanners = asyncHandler (async (req, res, next) => {
+// exports.getBanners = asyncHandler(async (req, res, next) => {
 //   let filter = {};
 //   if (req.filterObj) {
 //     filter = req.filterObj;
@@ -111,20 +76,55 @@ exports.getBanners = asyncHandler(async (req, res, next) => {
 //     .limitFields()
 //     .sort();
 
-//   // Execute query
 //   const { mongooseQuery, paginationResult } = apiFeatures;
 //   const documents = await mongooseQuery;
 
-//   // Check if documents length is greater than 0
 //   if (documents.length > 0) {
-//     // Return the first document as an object
-//     const data = documents;
+//     const { _id, images } = documents[0];
 
-//     res.status(200).json({ results: 1, paginationResult, data });
+//     const data = {
+//       id: _id,
+//       images: images.map((image, index) => ({
+//         // [`banner${index + 1}`]: {
+//         url: image.url,
+//         imageId: image.imageId,
+//         // },
+//       })),
+//     };
+
+//       res.status(200).json({ results: 1, paginationResult, data });
 //   } else {
-//     res.status(200).json({ results: 0, paginationResult, data: null });
+//     res.status(200).json({ results: 0, paginationResult, data: {} });
 //   }
 // });
+
+exports.getBanners = asyncHandler(async (req, res, next) => {
+  let filter = {};
+  if (req.filterObj) {
+    filter = req.filterObj;
+  }
+  // Build query
+  const documentsCounts = await Banner.countDocuments();
+  const apiFeatures = new ApiFeatures(Banner.find(filter), req.query)
+    .paginate(documentsCounts)
+    .filter()
+    .limitFields()
+    .sort();
+
+  // Execute query
+  const { mongooseQuery, paginationResult } = apiFeatures;
+  const documents = await mongooseQuery;
+
+  // Check if documents length is greater than 0
+  if (documents.length > 0) {
+    // Return the first document as an object
+    const data = documents;
+
+    res.status(200).json({ results: 1, paginationResult, data });
+  } else {
+    res.status(200).json({ results: 0, paginationResult, data: {} });
+  }
+});
 
 // @desc    Get specific banner by id
 // @route   GET /api/v1/banners/:id
@@ -134,7 +134,22 @@ exports.getBanner = factory.getOne(Banner);
 // @desc    Create banner
 // @route   POST  /api/v1/banners
 // @access  Private
-exports.createBanner = factory.createOne(Banner);
+// exports.createBanner = factory.createOne(Banner);
+exports.createBanner = async (req, res) => {
+  try {
+    const images = req.body.images.map((file) => ({
+      url: file.url,
+      imageId: file.imageId,
+    }));
+
+    const banner = new Banner({ images });
+    await banner.save();
+
+    res.status(201).json({ message: "Banner created successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to create banner" });
+  }
+};
 // @desc    Update specific banner
 // @route   PUT /api/v1/banners/:id
 // @access  Private
