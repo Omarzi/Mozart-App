@@ -33,7 +33,7 @@ exports.addProductToCart = asyncHandler(async (req, res, next) => {
         user: req.user._id,
         cartItems: [{ product: productId, color, price: product.priceNormal }],
       });
-    } else {
+    } else if (req.user.role === "user-wholesale") {
       cart = await Cart.create({
         user: req.user._id,
         cartItems: [
@@ -56,9 +56,17 @@ exports.addProductToCart = asyncHandler(async (req, res, next) => {
       // product not exist in cart,  push product to cartItems array
       // eslint-disable-next-line no-lonely-if
       if (req.user.role === "user-normal") {
-        cart.cartItems.push({ product: productId, color, price: product.priceNormal });
-      } else {
-        cart.cartItems.push({ product: productId, color, price: product.priceWholesale });
+        cart.cartItems.push({
+          product: productId,
+          color,
+          price: product.priceNormal,
+        });
+      } else if(req.user.role === "price-wholesale") {
+        cart.cartItems.push({
+          product: productId,
+          color,
+          price: product.priceWholesale,
+        });
       }
     }
   }
