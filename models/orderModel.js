@@ -97,7 +97,7 @@ orderSchema.pre(/^find/, function (next) {
   })
     .populate({
       path: "cartItems.product",
-      select: "title image",
+      select: "title titleAr image",
     })
     .populate({
       path: "branchId",
