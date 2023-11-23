@@ -14,11 +14,25 @@ exports.createProductValidator = [
       req.body.slug = slugify(val);
       return true;
     }),
+  check("titleAr")
+    .isLength({ min: 3 })
+    .withMessage("must be at least 3 chars")
+    .notEmpty()
+    .withMessage("Product required")
+    .custom((val, { req }) => {
+      req.body.slug = slugify(val);
+      return true;
+    }),
   check("description")
     .notEmpty()
     .withMessage("Product description is required")
     .isLength({ max: 2000 })
     .withMessage("Too long description"),
+  check("descriptionAr")
+  .notEmpty()
+  .withMessage("Product descriptionAr is required")
+  .isLength({ max: 2000 })
+  .withMessage("Too long descriptionAr"),
   check("quantity")
     .notEmpty()
     .withMessage("Product quantity is required")
@@ -28,13 +42,20 @@ exports.createProductValidator = [
     .optional()
     .isNumeric()
     .withMessage("Product quantity must be a number"),
-  check("price")
+  check("priceWholesale")
     .notEmpty()
-    .withMessage("Product price is required")
+    .withMessage("Product priceWholesale is required")
     .isNumeric()
-    .withMessage("Product price must be a number")
+    .withMessage("Product priceWholesale must be a number")
     .isLength({ max: 32 })
-    .withMessage("To long price"),
+    .withMessage("To long priceWholesale"),
+  check("priceNormal")
+    .notEmpty()
+    .withMessage("Product priceNormal is required")
+    .isNumeric()
+    .withMessage("Product priceNormal must be a number")
+    .isLength({ max: 32 })
+    .withMessage("To long priceNormal"),
   check("priceAfterDiscount")
     .optional()
     .isNumeric()

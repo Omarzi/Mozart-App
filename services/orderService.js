@@ -35,6 +35,11 @@ exports.createCashOrder = asyncHandler(async (req, res, next) => {
 
   const totalOrderPrice = cartPrice + taxPrice + shippingPrice;
 
+  const allCart = await Order.find();
+  let number = allCart[allCart.length - 1].orderNumber;
+
+  number += 1;
+
   // 3) Create order with default payment method "cash"
   if (req.user.role === "user-wholesale") {
     req.body.status = "confirm";
@@ -44,6 +49,7 @@ exports.createCashOrder = asyncHandler(async (req, res, next) => {
     req.body.status = "declined";
   }
   const order = await Order.create({
+    orderNumber: number,
     user: req.user,
     cartItems: cart.cartItems,
     // shippingAddress: req.body.shippingAddress,

@@ -32,6 +32,25 @@ exports.createCategoryValidator = [
       req.body.slug = slugify(val);
       return true;
     }),
+  check("nameAr")
+    .notEmpty()
+    .withMessage("Category required")
+    .custom(async (name) => {
+      const brandName = await CategoryModel.findOne({ name: name });
+      if (brandName) {
+        throw new Error("category already exists");
+      }
+      return true;
+    })
+    .bail()
+    .isLength({ min: 3 })
+    .withMessage("Too short category nameAr")
+    .isLength({ max: 32 })
+    .withMessage("Too long category nameAr")
+    .custom((val, { req }) => {
+      req.body.slug = slugify(val);
+      return true;
+    }),
   validatorMiddleware,
 ];
 

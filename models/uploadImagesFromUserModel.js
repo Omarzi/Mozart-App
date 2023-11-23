@@ -20,6 +20,11 @@ const uploadImagesFromUserSchema = new mongoose.Schema(
       required: [true, "Product Name is required"],
     },
 
+    nameOfProductAr: {
+      type: String,
+      required: [true, "Product Name Ar is required"],
+    },
+
     user: { type: mongoose.Schema.ObjectId, ref: "User" },
   },
   { timestamps: true }

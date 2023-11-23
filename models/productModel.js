@@ -9,6 +9,14 @@ const productSchema = new mongoose.Schema(
       minlength: [3, "Too short product title"],
       maxlength: [100, "Too long product title"],
     },
+    
+    titleAr: {
+      type: String,
+      required: true,
+      trim: true,
+      minlength: [3, "Too short product titleAr"],
+      maxlength: [100, "Too long product titleAr"],
+    },
 
     slug: {
       type: String,
@@ -22,6 +30,12 @@ const productSchema = new mongoose.Schema(
       minlength: [20, "Too short product description"],
     },
     
+    descriptionAr: {
+      type: String,
+      required: [true, "Product descriptionAr is required"],
+      minlength: [20, "Too short product descriptionAr"],
+    },
+    
     quantity: {
       type: Number,
       required: [true, "Product quantity is required"],
@@ -32,11 +46,18 @@ const productSchema = new mongoose.Schema(
       default: 0,
     },
     
-    price: {
+    priceNormal: {
       type: Number,
-      required: [true, "Product price is required"],
+      required: [true, "Product priceNormal is required"],
       trim: true,
-      max: [200000, "Too long product price"],
+      max: [200000, "Too long product priceNormal"],
+    },
+
+    priceWholesale: {
+      type: Number,
+      required: [true, "Product priceWholesale is required"],
+      trim: true,
+      max: [800000, "Too long product priceWholesale"],
     },
     
     priceAfterDiscount: {

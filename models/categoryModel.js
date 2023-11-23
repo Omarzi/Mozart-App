@@ -9,6 +9,13 @@ const categorySchema = new mongoose.Schema(
       minLength: [3, "Too short category name"],
       maxLength: [32, "Too long category name"],
     },
+    nameAr: {
+      type: String,
+      required: [true, "Category required"],
+      unique: [true, "Category must be unique"],
+      minLength: [3, "Too short category nameAr"],
+      maxLength: [32, "Too long category nameAr"],
+    },
     // A and  B => shopping.com/a-and-b
     slug: {
       type: String,

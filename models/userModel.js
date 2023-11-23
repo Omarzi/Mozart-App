@@ -30,6 +30,7 @@ const userSchema = new mongoose.Schema(
     },
 
     phone: {
+      unique: true,
       type: String,
       required: [true, "Phone is required"],
     },

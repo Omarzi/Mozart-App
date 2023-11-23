@@ -127,6 +127,7 @@ exports.uploadImage = (Model) => async (req, res, next) => {
             imageId: req.body.image.imageId,
           },
           nameOfProduct: newDoc.nameOfProduct,
+          nameOfProductAr: newDoc.nameOfProductAr,
           user: {
             id: user._id,
             name: user.name,
@@ -167,11 +168,27 @@ exports.getAllImages = (Model, modelName = "") =>
 
     // Replace 'user' field with 'userdata'
     const updatedDocuments = documents.map((doc) => {
-      const { _id, image, nameOfProduct, user, createdAt, updatedAt } = doc;
+      const {
+        _id,
+        image,
+        nameOfProductAr,
+        nameOfProduct,
+        user,
+        createdAt,
+        updatedAt,
+      } = doc;
       const userdata = user
         ? { name: user.name, phone: user.phone, email: user.email }
         : null;
-      return { _id, image, nameOfProduct, userdata, createdAt, updatedAt };
+      return {
+        _id,
+        image,
+        nameOfProductAr,
+        nameOfProduct,
+        userdata,
+        createdAt,
+        updatedAt,
+      };
     });
 
     res.status(200).json({
@@ -363,5 +380,3 @@ exports.setImageToBody = (model) =>
   });
 
 // exports.updateImage = (
-
-

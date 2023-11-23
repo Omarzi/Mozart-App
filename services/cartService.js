@@ -12,6 +12,7 @@ const calcTotalCartPrice = (cart) => {
   });
   cart.totalCartPrice = totalPrice;
   cart.totalPriceAfterDiscount = undefined;
+  console.log(cart);
   return totalPrice;
 };
 
@@ -26,11 +27,20 @@ exports.addProductToCart = asyncHandler(async (req, res, next) => {
   let cart = await Cart.findOne({ user: req.user._id });
 
   if (!cart) {
-    // create cart fot logged user with product
-    cart = await Cart.create({
-      user: req.user._id,
-      cartItems: [{ product: productId, color, price: product.price }],
-    });
+    // create cart fot logged user with produc t
+    if (req.user.role === "user-normal") {
+      cart = await Cart.create({
+        user: req.user._id,
+        cartItems: [{ product: productId, color, price: product.priceNormal }],
+      });
+    } else {
+      cart = await Cart.create({
+        user: req.user._id,
+        cartItems: [
+          { product: productId, color, price: product.priceWholesale },
+        ],
+      });
+    }
   } else {
     // product exist in cart, update product quantity
     const productIndex = cart.cartItems.findIndex(
@@ -44,7 +54,12 @@ exports.addProductToCart = asyncHandler(async (req, res, next) => {
       cart.cartItems[productIndex] = cartItem;
     } else {
       // product not exist in cart,  push product to cartItems array
-      cart.cartItems.push({ product: productId, color, price: product.price });
+      // eslint-disable-next-line no-lonely-if
+      if (req.user.role === "user-normal") {
+        cart.cartItems.push({ product: productId, color, price: product.priceNormal });
+      } else {
+        cart.cartItems.push({ product: productId, color, price: product.priceWholesale });
+      }
     }
   }
 
@@ -67,7 +82,7 @@ exports.getLoggedUserCart = asyncHandler(async (req, res, next) => {
   const cart = await Cart.findOne({ user: req.user._id })
     .populate({
       path: "cartItems.product",
-      select: "title description price image",
+      select: "title titleAr description descriptionAr price image",
     })
     .populate({
       path: "user",
@@ -90,7 +105,9 @@ exports.getLoggedUserCart = asyncHandler(async (req, res, next) => {
     product: {
       _id: item.product._id,
       title: item.product.title,
+      titleAr: item.product.titleAr,
       description: item.product.description,
+      descriptionAr: item.product.descriptionAr,
       price: item.product.price,
       image: item.product.image.url,
       // Add other fields as needed

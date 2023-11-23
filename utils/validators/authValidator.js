@@ -80,11 +80,8 @@ exports.signupUserValidator = [
 ];
 
 exports.loginUserValidator = [
-  check("email")
-    .notEmpty()
-    .withMessage("Email required")
-    .isEmail()
-    .withMessage("Invalid email address"),
+  check("email").optional().isEmail().withMessage("Invalid email address"),
+  check("phone").optional(),
 
   check("password")
     .notEmpty()
