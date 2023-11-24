@@ -9,6 +9,7 @@ const ApiError = require("../utils/apiError");
 const sendEmail = require("../utils/sendEmail");
 const createToken = require("../utils/createToken");
 const { sanatizeUser } = require("../utils/sanatizeData");
+const { sendSMS } = require("../config/sendSMS");
 
 const User = require("../models/userModel");
 
@@ -154,12 +155,21 @@ exports.allowedTo = (...roles) =>
 // @access  Public
 exports.forgetPassword = asyncHandler(async (req, res, next) => {
   // 1) Get user by email
-  const user = await User.findOne({ email: req.body.email });
+  const user = await User.findOne({
+    $or: [{ email: req.body.email }, { phone: req.body.phone }],
+  });
+
   if (!user) {
     return next(
-      new ApiError(`There is no user with this email ${req.body.email}`, 404)
+      new ApiError(
+        `There is no user with this email or this phone ${
+          req.body.email || req.body.phone
+        }`,
+        404
+      )
     );
   }
+
   // 2) If user is exist, Generate hsash reset random 6 digits and save it in db
   const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
   const hashedResetCode = crypto
@@ -176,6 +186,14 @@ exports.forgetPassword = asyncHandler(async (req, res, next) => {
   user.save();
 
   const message = `Hi ${user.name},\nWe received a reset the password on your Mozart Account.\n${resetCode}\nEnter this code to complete your reset.\nThanks for helping us keep your account secure.\nThe Mozart Team`;
+
+  if (req.body.phone) {
+    await sendSMS(message, req.body.phone);
+    res
+      .status(200)
+      .json({ status: "Success", message: "Rest code send to phone" });
+  }
+
   // 3) Send the reset code via email
   try {
     await sendEmail({
@@ -227,10 +245,17 @@ exports.verifyPasswordResetCode = asyncHandler(async (req, res, next) => {
 // @access  Public
 exports.resetPassword = asyncHandler(async (req, res, next) => {
   // 1) Get user based on email
-  const user = await User.findOne({ email: req.body.email });
+  const user = await User.findOne({
+    $or: [{ email: req.body.email }, { phone: req.body.phone }],
+  });
   if (!user) {
     return next(
-      new ApiError(`There is no user with email ${req.body.email}`, 404)
+      new ApiError(
+        `There is no user with email or with phone ${
+          req.body.email || req.body.phone
+        }`,
+        404
+      )
     );
   }
 

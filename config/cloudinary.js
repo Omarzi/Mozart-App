@@ -24,7 +24,7 @@ exports.uploadImage = (name) =>
   asyncHandler(async (req, res, next) => {
     if (req.file || req.files) {
       const file = req.file || req.files.image[0];
-      const imageToUri = await parser.format(
+      const imageToUri = parser.format(
         path.extname(file.originalname).toString(),
         file.buffer
       );
@@ -56,13 +56,13 @@ exports.updateImage = asyncHandler(async (req, res, next) => {
   if (req.file) {
     const file = req.file;
 
-    const imageToUri = await parser.format(
+    const imageToUri = parser.format(
       path.extname(file.originalname).toString(),
       file.buffer
     );
 
     const uploadOptions = {
-      public_id: req.image.imageId,
+      public_id: req.body.imageId,
       allowed_formats: ["jpg", "jpeg", "png", "gif", "avif"],
       transformation: [
         { width: 600, height: 600, crop: "fit" },
@@ -85,13 +85,13 @@ exports.updateImage = asyncHandler(async (req, res, next) => {
     if (req.files.image) {
       const file = req.files.image[0];
 
-      const imageToUri = await parser.format(
+      const imageToUri = parser.format(
         path.extname(file.originalname).toString(),
         file.buffer
       );
 
       const uploadOptions = {
-        public_id: req.image.imageId,
+        public_id: req.body.imageId,
         allowed_formats: ["jpg", "jpeg", "png", "gif", "avif"],
         transformation: [
           { width: 600, height: 600, crop: "fit" },
@@ -124,7 +124,7 @@ exports.uploadImages = (name) =>
       // Use Promise.all to upload images in parallel
       await Promise.all(
         images.map(async (element) => {
-          const imageToUri = await parser.format(
+          const imageToUri = parser.format(
             path.extname(element.originalname).toString(),
             element.buffer
           );
@@ -147,7 +147,7 @@ exports.uploadImages = (name) =>
             imageToUri.content,
             uploadOptions
           );
-          console.log(uploadedImage)
+          console.log(uploadedImage);
           const url = uploadedImage.secure_url;
           const imageId = uploadedImage.public_id;
           const image = { url: url, imageId: imageId };
@@ -170,7 +170,7 @@ exports.updateImages = (name) =>
       // Use Promise.all to upload images in parallel
       await Promise.all(
         images.map(async (element) => {
-          const imageToUri = await parser.format(
+          const imageToUri = parser.format(
             path.extname(element.originalname).toString(),
             element.buffer
           );
@@ -205,7 +205,7 @@ exports.updateImages = (name) =>
       // image id
       await Promise.all(
         req.imagesToUpdate.map(async (item) => {
-          const imageToUri = await parser.format(
+          const imageToUri = parser.format(
             path.extname(item.image.originalname).toString(),
             item.image.buffer
           );
@@ -255,6 +255,53 @@ exports.deleteImage = asyncHandler(async (req, res, next) => {
   await deleted;
   next();
 });
+
+exports.uploadBannerImages = (name) =>
+  asyncHandler(async (req, res, next) => {
+    if (req.files) {
+      const { images } = req.files;
+      const uploadedImages = [];
+
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < images.length; i++) {
+        // eslint-disable-next-line no-await-in-loop
+        const imageToUri = await parser.format(
+          path.extname(images[i].originalname).toString(),
+          images[i].buffer
+        );
+
+        const filename = `${name}-${uuidv4()}-${Date.now()}`;
+
+        const uploadOptions = {
+          folder: name,
+          public_id: filename,
+          allowed_formats: ["jpg", "jpeg", "png", "gif", "avif"],
+          transformation: [
+            { width: 600, height: 600, crop: "fit" },
+            // { width: 2000, height: 1333, crop: "fit" },
+            { quality: 95 },
+          ],
+        };
+
+        // Use await inside this Promise.all
+        // eslint-disable-next-line no-await-in-loop
+        const uploadedImage = await cloudinary.uploader.upload(
+          imageToUri.content,
+          uploadOptions
+        );
+        const url = uploadedImage.secure_url;
+        const imageId = uploadedImage.public_id;
+        const image = { url: url, imageId: imageId };
+        uploadedImages.push(image);
+        // }
+        // )
+        // );
+      }
+      req.body.images = uploadedImages;
+    }
+    // console.log(req.body.images);
+    next();
+  });
 
 exports.deleteImages = asyncHandler(async (req, res, next) => {
   await Promise.all(

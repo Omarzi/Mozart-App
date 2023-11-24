@@ -11,7 +11,7 @@ const {
   setImageToBody,
 } = require("../services/bannerService");
 
-const { uploadImages, updateImage, updateImages, deleteImages } = require("../config/cloudinary");
+const { uploadImages, updateImage, updateImages, deleteImages, uploadBannerImages } = require("../config/cloudinary");
 
 const authService = require("../services/authService");
 
@@ -25,7 +25,7 @@ router
     authService.allowedTo("admin", "manager"),
     uploadBannerImage,
     // resizeBannerImage,
-    uploadImages('banner'),
+    uploadBannerImages('banner'),
     createBanner
   );
 router
