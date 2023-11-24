@@ -13,7 +13,7 @@ const calcTotalCartPrice = (cart) => {
   cart.totalCartPrice = totalPrice;
   cart.totalPriceAfterDiscount = undefined;
   console.log(cart);
-  return totalPrice;
+  return cart;
 };
 
 // @desc    Add product to cart
@@ -143,6 +143,59 @@ exports.addProductToCart = asyncHandler(async (req, res, next) => {
 // @desc    Get logged user cart
 // @route   GET /api/v1/cart
 // @access  Private/Protected/User
+// exports.getLoggedUserCart = asyncHandler(async (req, res, next) => {
+//   const cart = await Cart.findOne({ user: req.user._id })
+//     .populate({
+//       path: "cartItems.product",
+//       select: "title titleAr description descriptionAr price image",
+//     })
+//     .populate({
+//       path: "user",
+//       select: "name email phone lat lng address role",
+//     });
+
+//   if (!cart) {
+//     return res.status(200).json({
+//       message: `There is no cart for this user id: ${req.user._id}`,
+//       data: {},
+//     });
+//   }
+
+//   // Replace product IDs with product details
+//   const populatedCartItems = cart.cartItems.map((item) => ({
+//     _id: item._id,
+//     quantity: item.quantity,
+//     color: item.color,
+//     price: item.price,
+//     product: {
+//       _id: item.product._id,
+//       title: item.product.title,
+//       titleAr: item.product.titleAr,
+//       description: item.product.description,
+//       descriptionAr: item.product.descriptionAr,
+//       price: item.product.price,
+//       image: item.product.image.url,
+//       // Add other fields as needed
+//     },
+//   }));
+
+//   const populatedCart = {
+//     status: "success",
+//     numOfCartItems: populatedCartItems.length,
+//     data: {
+//       _id: cart._id,
+//       cartItems: populatedCartItems,
+//       user: cart.user,
+//       createdAt: cart.createdAt,
+//       updatedAt: cart.updatedAt,
+//       __v: cart.__v,
+//       totalCartPrice: cart.totalCartPrice,
+//     },
+//   };
+
+//   res.status(200).json(populatedCart);
+// });
+
 exports.getLoggedUserCart = asyncHandler(async (req, res, next) => {
   const cart = await Cart.findOne({ user: req.user._id })
     .populate({
@@ -161,8 +214,11 @@ exports.getLoggedUserCart = asyncHandler(async (req, res, next) => {
     });
   }
 
+  // Calculate the total cart price
+  const updatedCart = calcTotalCartPrice(cart);
+
   // Replace product IDs with product details
-  const populatedCartItems = cart.cartItems.map((item) => ({
+  const populatedCartItems = updatedCart.cartItems.map((item) => ({
     _id: item._id,
     quantity: item.quantity,
     color: item.color,
@@ -183,13 +239,13 @@ exports.getLoggedUserCart = asyncHandler(async (req, res, next) => {
     status: "success",
     numOfCartItems: populatedCartItems.length,
     data: {
-      _id: cart._id,
+      _id: updatedCart._id,
       cartItems: populatedCartItems,
-      user: cart.user,
-      createdAt: cart.createdAt,
-      updatedAt: cart.updatedAt,
-      __v: cart.__v,
-      totalCartPrice: cart.totalCartPrice,
+      user: updatedCart.user,
+      createdAt: updatedCart.createdAt,
+      updatedAt: updatedCart.updatedAt,
+      __v: updatedCart.__v,
+      totalCartPrice: updatedCart.totalCartPrice,
     },
   };
 
