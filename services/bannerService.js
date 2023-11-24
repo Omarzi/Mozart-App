@@ -145,7 +145,9 @@ exports.createBanner = async (req, res) => {
     const banner = new Banner({ images });
     await banner.save();
 
-    res.status(201).json({ message: "Banner created successfully" });
+    res
+      .status(201)
+      .json({ message: "Banner created successfully", data: banner });
   } catch (error) {
     res.status(500).json({ error: "Failed to create banner" });
   }

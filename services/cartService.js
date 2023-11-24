@@ -19,6 +19,69 @@ const calcTotalCartPrice = (cart) => {
 // @desc    Add product to cart
 // @route   POST /api/v1/cart
 // @access  Private/Protected/User
+// exports.addProductToCart = asyncHandler(async (req, res, next) => {
+//   const { productId, color } = req.body;
+//   const product = await Product.findById(productId);
+
+//   // 1) Get Cart for logged user
+//   let cart = await Cart.findOne({ user: req.user._id });
+
+//   if (!cart) {
+//     // create cart fot logged user with produc t
+//     if (req.user.role === "user-normal") {
+//       cart = await Cart.create({
+//         user: req.user._id,
+//         cartItems: [{ product: productId, color, price: product.priceNormal }],
+//       });
+//     } else if (req.user.role === "user-wholesale") {
+//       cart = await Cart.create({
+//         user: req.user._id,
+//         cartItems: [
+//           { product: productId, color, price: product.priceWholesale },
+//         ],
+//       });
+//     }
+//   } else {
+//     // product exist in cart, update product quantity
+//     const productIndex = cart.cartItems.findIndex(
+//       (item) => item.product.toString() === productId && item.color === color
+//     );
+
+//     if (productIndex > -1) {
+//       const cartItem = cart.cartItems[productIndex];
+//       cartItem.quantity += 1;
+
+//       cart.cartItems[productIndex] = cartItem;
+//     } else {
+//       // product not exist in cart,  push product to cartItems array
+//       // eslint-disable-next-line no-lonely-if
+//       if (req.user.role === "user-normal") {
+//         cart.cartItems.push({
+//           product: productId,
+//           color,
+//           price: product.priceNormal,
+//         });
+//       } else if(req.user.role === "price-wholesale") {
+//         cart.cartItems.push({
+//           product: productId,
+//           color,
+//           price: product.priceWholesale,
+//         });
+//       }
+//     }
+//   }
+
+//   // Calculate total cart price
+//   calcTotalCartPrice(cart);
+//   await cart.save();
+
+//   res.status(200).json({
+//     status: "success",
+//     message: "Product added to cart successfully",
+//     numOfCartItems: cart.cartItems.length,
+//     data: cart,
+//   });
+// });
 exports.addProductToCart = asyncHandler(async (req, res, next) => {
   const { productId, color } = req.body;
   const product = await Product.findById(productId);
@@ -27,7 +90,7 @@ exports.addProductToCart = asyncHandler(async (req, res, next) => {
   let cart = await Cart.findOne({ user: req.user._id });
 
   if (!cart) {
-    // create cart fot logged user with produc t
+    // create cart for logged user with product
     if (req.user.role === "user-normal") {
       cart = await Cart.create({
         user: req.user._id,
@@ -42,7 +105,7 @@ exports.addProductToCart = asyncHandler(async (req, res, next) => {
       });
     }
   } else {
-    // product exist in cart, update product quantity
+    // product exists in cart, update product quantity
     const productIndex = cart.cartItems.findIndex(
       (item) => item.product.toString() === productId && item.color === color
     );
@@ -50,10 +113,9 @@ exports.addProductToCart = asyncHandler(async (req, res, next) => {
     if (productIndex > -1) {
       const cartItem = cart.cartItems[productIndex];
       cartItem.quantity += 1;
-
       cart.cartItems[productIndex] = cartItem;
     } else {
-      // product not exist in cart,  push product to cartItems array
+      // product not exist in cart, push product to cartItems array
       // eslint-disable-next-line no-lonely-if
       if (req.user.role === "user-normal") {
         cart.cartItems.push({
@@ -61,7 +123,7 @@ exports.addProductToCart = asyncHandler(async (req, res, next) => {
           color,
           price: product.priceNormal,
         });
-      } else if(req.user.role === "price-wholesale") {
+      } else if (req.user.role === "user-wholesale") {
         cart.cartItems.push({
           product: productId,
           color,
@@ -71,16 +133,11 @@ exports.addProductToCart = asyncHandler(async (req, res, next) => {
     }
   }
 
-  // Calculate total cart price
-  calcTotalCartPrice(cart);
+  // Save the updated cart
   await cart.save();
 
-  res.status(200).json({
-    status: "success",
-    message: "Product added to cart successfully",
-    numOfCartItems: cart.cartItems.length,
-    data: cart,
-  });
+  // Return the updated cart or any other response as needed
+  res.status(200).json({ cart });
 });
 
 // @desc    Get logged user cart

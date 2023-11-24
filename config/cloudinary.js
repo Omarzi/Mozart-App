@@ -122,7 +122,7 @@ exports.uploadImages = (name) =>
       const uploadedImages = [];
 
       // Use Promise.all to upload images in parallel
-     await Promise.all(
+      await Promise.all(
         images.map(async (element) => {
           const imageToUri = await parser.format(
             path.extname(element.originalname).toString(),
@@ -147,13 +147,13 @@ exports.uploadImages = (name) =>
             imageToUri.content,
             uploadOptions
           );
+          console.log(uploadedImage)
           const url = uploadedImage.secure_url;
           const imageId = uploadedImage.public_id;
           const image = { url: url, imageId: imageId };
           uploadedImages.push(image);
-          console.log(uploadedImage)
         })
-     );
+      );
 
       req.body.images = uploadedImages;
     }
