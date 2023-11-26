@@ -27,7 +27,7 @@ router
   );
 router.get(
   "/branch",
-  authService.allowedTo("manager"),
+  authService.allowedTo("manager", "admin"),
   // filterOrdersForLoggedUser,
   findAllOrdersInOneBranch
 );

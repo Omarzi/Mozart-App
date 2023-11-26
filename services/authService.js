@@ -65,7 +65,10 @@ exports.login = asyncHandler(async (req, res, next) => {
   const payLoad = {
     userId: user._id,
     active: user.active,
+    enablePermission: user.enablePermission,
   };
+
+  console.log(user.enablePermission);
 
   // 3) generate token
   const token = createToken(payLoad);
@@ -110,7 +113,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
     );
   }
 
-  if (decoded.active === false && currentUser.role === 'user-wholesale') {
+  if (decoded.active === false && currentUser.role === "user-wholesale") {
     return next(new ApiError("The user is not activated", 401));
   }
 
@@ -154,6 +157,15 @@ exports.allowedTo = (...roles) =>
     if (!roles.includes(req.user.role)) {
       return next(
         new ApiError("You are not allowed to access this route", 403)
+      );
+    }
+
+    if (req.user.enablePermission === false && req.user.role === "manager") {
+      return next(
+        new ApiError(
+          "The manager is not add any products or categories or some permissions",
+          401
+        )
       );
     }
     next();

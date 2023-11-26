@@ -54,34 +54,14 @@ const userSchema = new mongoose.Schema(
       default: "user",
     },
 
-    // street: {
-    //   type: String,
-    //   required: [true, "Street is required"],
-    // },
-
-    // apartment: {
-    //   type: String,
-    //   required: [true, "Apartment is required"],
-    // },
-
-    // zip: {
-    //   type: String,
-    //   required: [true, "ZIP code is required"],
-    // },
-
-    // city: {
-    //   type: String,
-    //   required: [true, "City is required"],
-    // },
-
-    // country: {
-    //   type: String,
-    //   required: [true, "Country is required"],
-    // },
-
     active: {
       type: Boolean,
       default: false,
+    },
+
+    enablePermission: {
+      type: Boolean,
+      default: true,
     },
 
     // Child reference (one to many)

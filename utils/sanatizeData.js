@@ -11,5 +11,6 @@ exports.sanatizeUser = function (user) {
     lng: user.lng,
     address: user.address,
     active: user.active,
+    enablePermission: user.enablePermission,
   };
 };
