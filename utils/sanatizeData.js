@@ -10,5 +10,6 @@ exports.sanatizeUser = function (user) {
     lat: user.lat,
     lng: user.lng,
     address: user.address,
+    active: user.active,
   };
 };

@@ -27,11 +27,6 @@ exports.signup = asyncHandler(async (req, res, next) => {
     password: req.body.password,
     phone: req.body.phone,
     profileImg: req.body.profileImg,
-    // street: req.body.street,
-    // apartment: req.body.apartment,
-    // zip: req.body.zip,
-    // city: req.body.city,
-    // country: req.body.country,
     lat: req.body.lat,
     lng: req.body.lng,
     address: req.body.address,
@@ -41,8 +36,13 @@ exports.signup = asyncHandler(async (req, res, next) => {
   // Delete password from response
   delete user._doc.password;
 
+  const payLoad = {
+    userId: user._id,
+    active: user.active,
+  };
+
   //2) Generate token
-  const token = createToken(user._id);
+  const token = createToken(payLoad);
 
   res.status(201).json({ data: sanatizeUser(user), token });
 });
@@ -62,8 +62,13 @@ exports.login = asyncHandler(async (req, res, next) => {
     return next(new ApiError("Incorrect email or password", 401));
   }
 
+  const payLoad = {
+    userId: user._id,
+    active: user.active,
+  };
+
   // 3) generate token
-  const token = createToken(user._id);
+  const token = createToken(payLoad);
 
   // Delete password from response
   delete user._doc.password;
@@ -103,6 +108,10 @@ exports.protect = asyncHandler(async (req, res, next) => {
         401
       )
     );
+  }
+
+  if (decoded.active === false && currentUser.role === 'user-wholesale') {
+    return next(new ApiError("The user is not activated", 401));
   }
 
   // 4) check if user change his password after token created

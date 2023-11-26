@@ -81,7 +81,7 @@ const userSchema = new mongoose.Schema(
 
     active: {
       type: Boolean,
-      default: true,
+      default: false,
     },
 
     // Child reference (one to many)

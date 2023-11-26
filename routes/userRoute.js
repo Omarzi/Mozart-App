@@ -22,6 +22,7 @@ const {
   updateLoggedUserData,
   deleteLoggedUserData,
   activeLoggedUserData,
+  // updateToActivatedUser,
 } = require("../services/userService");
 
 const authService = require("../services/authService");
@@ -39,14 +40,26 @@ router.put(
 );
 router.put("/updateMe", updateLoggedUserValidator, updateLoggedUserData);
 router.delete("/deleteMe", deleteLoggedUserData);
-router.post("/addMe", activeLoggedUserData);
+router.post(
+  "/activate",
+  authService.allowedTo("admin", "manager"),
+  activeLoggedUserData
+);
 
 // Admin
 // router.use();
 router
   .route("/")
   .get(getUsers, authService.allowedTo("user", "manager", "admin"))
-  .post(uploadUserImage, resizeImage, createUserValidator, authService.allowedTo("admin", "manager"), createUser);
+  .post(
+    uploadUserImage,
+    resizeImage,
+    createUserValidator,
+    authService.allowedTo("admin", "manager"),
+    createUser
+  );
+// .put( authService.allowedTo("admin", "manager"), updateToActivatedUser);
+
 router.put(
   "/changePassword/:id",
   changeUserPasswordValidator,
@@ -56,7 +69,20 @@ router.put(
 router
   .route("/:id")
   .get(getUserValidator, authService.allowedTo("admin", "manager"), getUser)
-  .put(uploadUserImage, resizeImage, updateUserValidator, authService.allowedTo("admin", "manager"), updateUser)
-  .delete(deleteUserValidator, authService.allowedTo("admin", "manager"), deleteUser);
+  .put(
+    uploadUserImage,
+    resizeImage,
+    updateUserValidator,
+    authService.allowedTo("admin", "manager"),
+    updateUser
+  )
+  .delete(
+    deleteUserValidator,
+    authService.allowedTo("admin", "manager"),
+    deleteUser
+  );
+
+// router
+// ;
 
 module.exports = router;

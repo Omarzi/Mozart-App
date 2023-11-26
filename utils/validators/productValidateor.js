@@ -166,6 +166,8 @@ exports.updateProductValidator = [
       req.body.slug = slugify(val);
       return true;
     }),
+    body("titleAr")
+    .optional(),
   validatorMiddleware,
 ];
 

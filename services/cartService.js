@@ -5,14 +5,18 @@ const Product = require("../models/productModel");
 const Coupon = require("../models/couponModel");
 const Cart = require("../models/cartModel");
 
-const calcTotalCartPrice = (cart) => {
+const calcTotalCartPrice = (cart, userType) => {
   let totalPrice = 0;
-  cart.cartItems.forEach((item) => {
-    totalPrice += item.quantity * item.price;
-  });
+    cart.cartItems.forEach((item) => {
+      totalPrice += item.quantity * item.price;
+    });
+
+  console.log("--------------------------------------------------------");
+  console.log(totalPrice);
+  console.log("--------------------------------------------------------");
+
   cart.totalCartPrice = totalPrice;
   cart.totalPriceAfterDiscount = undefined;
-  console.log(cart);
   return cart;
 };
 
@@ -95,6 +99,8 @@ exports.addProductToCart = asyncHandler(async (req, res, next) => {
       cart = await Cart.create({
         user: req.user._id,
         cartItems: [{ product: productId, color, price: product.priceNormal }],
+        totalCartPrice: product.priceNormal,
+        totalPriceAfterDiscount: 0,
       });
     } else if (req.user.role === "user-wholesale") {
       cart = await Cart.create({
@@ -102,6 +108,8 @@ exports.addProductToCart = asyncHandler(async (req, res, next) => {
         cartItems: [
           { product: productId, color, price: product.priceWholesale },
         ],
+        totalCartPrice: product.priceWholesale,
+        totalPriceAfterDiscount: 0,
       });
     }
   } else {
@@ -123,15 +131,26 @@ exports.addProductToCart = asyncHandler(async (req, res, next) => {
           color,
           price: product.priceNormal,
         });
+        // cart.totalCartPrice = calcTotalCartPrice(cart, 'user-normal').totalCartPrice;
+        // cart.totalPriceAfterDiscount =
+        // calcTotalCartPrice(cart).totalPriceAfterDiscount;
+        calcTotalCartPrice(cart, "user-normal");
       } else if (req.user.role === "user-wholesale") {
         cart.cartItems.push({
           product: productId,
           color,
           price: product.priceWholesale,
         });
+        // calcTotalCartPrice(cart, "user-wholesale");
+
+        // cart.totalCartPrice = calcTotalCartPrice(cart, 'user-wholesale').totalCartPrice;
+        // cart.totalPriceAfterDiscount =
+          // calcTotalCartPrice(cart).totalPriceAfterDiscount;
       }
     }
   }
+
+  calcTotalCartPrice(cart, "user-normal");
 
   // Save the updated cart
   await cart.save();
@@ -139,6 +158,8 @@ exports.addProductToCart = asyncHandler(async (req, res, next) => {
   // Return the updated cart or any other response as needed
   res.status(200).json({ cart });
 });
+
+
 
 // @desc    Get logged user cart
 // @route   GET /api/v1/cart
@@ -246,6 +267,7 @@ exports.getLoggedUserCart = asyncHandler(async (req, res, next) => {
       updatedAt: updatedCart.updatedAt,
       __v: updatedCart.__v,
       totalCartPrice: updatedCart.totalCartPrice,
+      totalPriceAfterDiscount: updatedCart.totalPriceAfterDiscount,
     },
   };
 

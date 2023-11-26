@@ -64,6 +64,7 @@ exports.updateCategoryValidator = [
       req.body.slug = slugify(val);
       return true;
     }),
+  body("nameAr").optional(),
   validatorMiddleware,
 ];
 

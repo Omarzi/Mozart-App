@@ -14,66 +14,6 @@ const User = require("../models/userModel");
 // @desc    Create cash order
 // @route   POST /api/v1/orders/:cartId
 // @access  Prived/Protected/User
-// exports.createCashOrder = asyncHandler(async (req, res, next) => {
-//   // App settings (Admin make this data)
-//   const taxPrice = 0;
-//   const shippingPrice = 0;
-
-//   // 1) Get cart depend on cartId
-//   const cart = await Cart.findById(req.params.cartId);
-
-//   if (!cart) {
-//     return next(
-//       new ApiError(`There is no cart with id ${req.params.cartId}`, 404)
-//     );
-//   }
-
-//   // 2) Get order price depend on cart price "If coupon applied"
-//   const cartPrice = cart.totalPriceAfterDiscount
-//     ? cart.totalPriceAfterDiscount
-//     : cart.totalCartPrice;
-
-//   const totalOrderPrice = cartPrice + taxPrice + shippingPrice;
-
-//   const allCart = await Order.find();
-//   let number = allCart[allCart.length - 1].orderNumber;
-
-//   number += 1;
-
-//   // 3) Create order with default payment method "cash"
-//   if (req.user.role === "user-wholesale") {
-//     req.body.status = "confirm";
-//   } else if (req.user.role === "user-normal") {
-//     req.body.status = "in-progress";
-//   } else {
-//     req.body.status = "declined";
-//   }
-//   const order = await Order.create({
-//     orderNumber: number,
-//     user: req.user,
-//     cartItems: cart.cartItems,
-//     // shippingAddress: req.body.shippingAddress,
-//     branchId: req.body.branchId,
-//     totalOrderPrice,
-//     status: req.body.status,
-//   });
-
-//   // 4) After creating order, decrement product quantity, icreament product sold
-//   if (order) {
-//     const bulkOption = cart.cartItems.map((item) => ({
-//       updateOne: {
-//         filter: { _id: item.product },
-//         update: { $inc: { quantity: -item.quantity, sold: +item.quantity } },
-//       },
-//     }));
-//     await Product.bulkWrite(bulkOption, {});
-
-//     // 5) Clear cart depend on cartId
-//     await Cart.findByIdAndDelete(req.params.cartId);
-//   }
-
-//   res.status(201).json({ status: "success", data: order });
-// });
 exports.createCashOrder = asyncHandler(async (req, res, next) => {
   // App settings (Admin make this data)
   const taxPrice = 0;
@@ -81,6 +21,8 @@ exports.createCashOrder = asyncHandler(async (req, res, next) => {
 
   // 1) Get cart depend on cartId
   const cart = await Cart.findById(req.params.cartId);
+
+  console.log(cart);
 
   if (!cart) {
     return next(
@@ -95,21 +37,18 @@ exports.createCashOrder = asyncHandler(async (req, res, next) => {
 
   const totalOrderPrice = cartPrice + taxPrice + shippingPrice;
 
-  // 3) Get the order number
   const allCart = await Order.find();
-  let number = 1; // Default value if allCart is empty
-  if (allCart.length > 0) {
-    number = allCart[allCart.length - 1].orderNumber + 1;
-  }
+  let number = allCart[allCart.length - 1].orderNumber;
 
-  // 4) Create order with default payment method "cash"
-  let status;
+  number += 1;
+
+  // 3) Create order with default payment method "cash"
   if (req.user.role === "user-wholesale") {
-    status = "confirm";
+    req.body.status = "confirm";
   } else if (req.user.role === "user-normal") {
-    status = "in-progress";
+    req.body.status = "in-progress";
   } else {
-    status = "declined";
+    req.body.status = "declined";
   }
   const order = await Order.create({
     orderNumber: number,
@@ -118,10 +57,10 @@ exports.createCashOrder = asyncHandler(async (req, res, next) => {
     // shippingAddress: req.body.shippingAddress,
     branchId: req.body.branchId,
     totalOrderPrice,
-    status,
+    status: req.body.status,
   });
 
-  // 5) After creating order, decrement product quantity, increment product sold
+  // 4) After creating order, decrement product quantity, icreament product sold
   if (order) {
     const bulkOption = cart.cartItems.map((item) => ({
       updateOne: {
@@ -131,7 +70,7 @@ exports.createCashOrder = asyncHandler(async (req, res, next) => {
     }));
     await Product.bulkWrite(bulkOption, {});
 
-    // 6) Clear cart based on cartId
+    // 5) Clear cart depend on cartId
     await Cart.findByIdAndDelete(req.params.cartId);
   }
 

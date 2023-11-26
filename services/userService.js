@@ -5,8 +5,8 @@ const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const { v4: uuidv4 } = require("uuid");
 
-const factory = require("./handlersFactory"),
-  getAll = require("./getAll");
+const factory = require("./handlersFactory");
+const getAll = require("./getAll");
 const ApiError = require("../utils/apiError");
 const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
 const createToken = require("../utils/createToken");
@@ -168,8 +168,39 @@ exports.deleteLoggedUserData = asyncHandler(async (req, res, next) => {
 // @desc    Activate my logged user
 // @route   DELETE /api/v1/users/addMe
 // @access  Private/Protect
-exports.activeLoggedUserData = asyncHandler(async (req, res, next) => {
-  await User.findByIdAndUpdate(req.user._id, { active: true });
+// exports.activeLoggedUserData = asyncHandler(async (req, res, next) => {
+//   await User.findByIdAndUpdate(req.body._id, { active: true });
 
-  res.status(204).json({ status: "Success" });
+//   res.status(204).json({ status: "Success" });
+// });
+exports.activeLoggedUserData = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.body.userId);
+
+  if (!user) {
+    return res.status(400).json({
+      status: "Error",
+      message: "User ID not provided in the request body",
+    });
+  }
+
+  user.active = true;
+  user.save();
+
+  res.status(200).json({ message: "User is now active", data: user });
+});
+
+exports.updateToActivatedUser = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.body.userId);
+
+  // Check if user is found
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  user.active = true;
+
+  // Save the changes
+  await user.save();
+
+  res.status(200).json({ message: "User updated successfully" });
 });
