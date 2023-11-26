@@ -65,10 +65,10 @@ exports.login = asyncHandler(async (req, res, next) => {
   const payLoad = {
     userId: user._id,
     active: user.active,
-    enablePermission: user.enablePermission,
+    // enablePermission: user.enablePermission,
   };
 
-  console.log(user.enablePermission);
+  // console.log(user.enablePermission);
 
   // 3) generate token
   const token = createToken(payLoad);
@@ -160,14 +160,14 @@ exports.allowedTo = (...roles) =>
       );
     }
 
-    if (req.user.enablePermission === false && req.user.role === "manager") {
-      return next(
-        new ApiError(
-          "The manager is not add any products or categories or some permissions",
-          401
-        )
-      );
-    }
+    // if (req.user.enablePermission === false && req.user.role === "manager") {
+    //   return next(
+    //     new ApiError(
+    //       "The manager is not add any products or categories or some permissions",
+    //       401
+    //     )
+    //   );
+    // }
     next();
   });
 

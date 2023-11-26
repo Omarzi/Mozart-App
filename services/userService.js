@@ -64,7 +64,7 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
       lat: req.body.lat,
       lng: req.body.lng,
       address: req.body.address,
-      enablePermission: req.body.enablePermission,
+      // enablePermission: req.body.enablePermission,
     },
     {
       new: true,

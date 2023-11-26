@@ -59,10 +59,10 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
 
-    enablePermission: {
-      type: Boolean,
-      default: true,
-    },
+    // enablePermission: {
+    //   type: Boolean,
+    //   default: true,
+    // },
 
     // Child reference (one to many)
     wishlist: [
