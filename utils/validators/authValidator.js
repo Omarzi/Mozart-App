@@ -47,13 +47,11 @@ exports.signupUserValidator = [
     .notEmpty()
     .withMessage("Password confirmation required"),
 
-  check("phone")
-    .notEmpty()
-    .withMessage("Phone number required")
-    .isMobilePhone(["ar-EG", "ar-SA", "ar-LB"])
-    .withMessage(
-      "Invalid phone number only accept Egy and SA and LB phone numbers"
-    ),
+  check("phone").notEmpty().withMessage("Phone number required"),
+  // .isMobilePhone(["ar-EG", "ar-SA", "ar-LB"])
+  // .withMessage(
+  // "Invalid phone number only accept Egy and SA and LB phone numbers"
+  // ),
 
   check("profileImg").optional(),
 
