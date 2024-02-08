@@ -16,11 +16,47 @@ const User = require("../models/userModel");
 // @desc    Signup
 // @route   POST /api/v1/auth/signup
 // @access  Public
+// exports.signup = asyncHandler(async (req, res, next) => {
+//   // 1) Create User
+//   if (req.body.role === "manager" || req.body.role === "admin") {
+//     return next(new ApiError("You must be a manager or a admin.", 400));
+//   }
+//   const user = await User.create({
+//     name: req.body.name,
+//     email: req.body.email,
+//     password: req.body.password,
+//     phone: req.body.phone,
+//     profileImg: req.body.profileImg,
+//     lat: req.body.lat,
+//     lng: req.body.lng,
+//     address: req.body.address,
+//     role: req.body.role,
+//   });
+
+//   // Delete password from response
+//   delete user._doc.password;
+
+//   const payLoad = {
+//     userId: user._id,
+//     active: user.active,
+//   };
+
+//   //2) Generate token
+//   const token = createToken(payLoad);
+
+//   res.status(201).json({ data: sanatizeUser(user), token });
+// });
 exports.signup = asyncHandler(async (req, res, next) => {
-  // 1) Create User
+  let active = false; // Default to false for wholesale users
   if (req.body.role === "manager" || req.body.role === "admin") {
-    return next(new ApiError("You must be a manager or a admin.", 400));
+    return next(new ApiError("You must be a manager or an admin.", 400));
   }
+
+  // If the role is not "user-wholesale", set active to true
+  if (req.body.role !== "user-wholesale") {
+    active = true;
+  }
+
   const user = await User.create({
     name: req.body.name,
     email: req.body.email,
@@ -31,6 +67,7 @@ exports.signup = asyncHandler(async (req, res, next) => {
     lng: req.body.lng,
     address: req.body.address,
     role: req.body.role,
+    active: active,
   });
 
   // Delete password from response
@@ -41,7 +78,7 @@ exports.signup = asyncHandler(async (req, res, next) => {
     active: user.active,
   };
 
-  //2) Generate token
+  // Generate token
   const token = createToken(payLoad);
 
   res.status(201).json({ data: sanatizeUser(user), token });

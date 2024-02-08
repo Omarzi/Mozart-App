@@ -50,7 +50,7 @@ const userSchema = new mongoose.Schema(
 
     role: {
       type: String,
-      enum: ['user-wholesale', 'user-normal', "admin", "manager"],
+      enum: ["user-wholesale", "user-normal", "admin", "manager"],
       default: "user",
     },
 
@@ -86,7 +86,7 @@ const userSchema = new mongoose.Schema(
     address: {
       type: String,
       required: [true, "Address is required"],
-    }
+    },
   },
   { timestamps: true }
 );
