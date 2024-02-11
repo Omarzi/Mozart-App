@@ -23,16 +23,8 @@ exports.createProductValidator = [
       req.body.slug = slugify(val);
       return true;
     }),
-  check("description")
-    .notEmpty()
-    .withMessage("Product description is required")
-    .isLength({ max: 2000 })
-    .withMessage("Too long description"),
-  check("descriptionAr")
-  .notEmpty()
-  .withMessage("Product descriptionAr is required")
-  .isLength({ max: 2000 })
-  .withMessage("Too long descriptionAr"),
+  check("description").optional(),
+  check("descriptionAr").optional(),
   check("quantity")
     .notEmpty()
     .withMessage("Product quantity is required")
@@ -166,8 +158,7 @@ exports.updateProductValidator = [
       req.body.slug = slugify(val);
       return true;
     }),
-    body("titleAr")
-    .optional(),
+  body("titleAr").optional(),
   validatorMiddleware,
 ];
 

@@ -52,8 +52,10 @@ exports.createUserValidator = [
   check("phone")
     .notEmpty()
     .withMessage("Phone number required")
-    .isMobilePhone(["ar-EG", "ar-SA"])
-    .withMessage("Invalid phone number only accept Egy and SA phone numbers"),
+    .isMobilePhone(["ar-LY", "ar-EG"])
+    .withMessage(
+      "Invalid phone number. Only accept Egyptian (EG) and Libyan (LY) phone numbers"
+    ),
 
   check("profileImg").optional(),
 
@@ -96,8 +98,10 @@ exports.updateUserValidator = [
   check("phone")
     .notEmpty()
     .withMessage("Phone number required")
-    .isMobilePhone(["ar-EG", "ar-SA"])
-    .withMessage("Invalid phone number only accept Egy and SA phone numbers"),
+    .isMobilePhone(["ar-LY", "ar-EG"])
+    .withMessage(
+      "Invalid phone number. Only accept Egyptian (EG) and Libyan (LY) phone numbers"
+    ),
 
   check("profileImg").optional(),
   check("role").optional(),
@@ -176,8 +180,10 @@ exports.updateLoggedUserValidator = [
   check("phone")
     .notEmpty()
     .withMessage("Phone number required")
-    .isMobilePhone(["ar-EG", "ar-SA"])
-    .withMessage("Invalid phone number only accept Egy and SA phone numbers"),
+    .isMobilePhone(["ar-LY", "ar-EG"])
+    .withMessage(
+      "Invalid phone number. Only accept Egyptian (EG) and Libyan (LY) phone numbers"
+    ),
 
   check("profileImg").optional(),
 
