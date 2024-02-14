@@ -22,7 +22,8 @@ exports.addProductToWishList = asyncHandler(async (req, res, next) => {
   });
 });
 
-// @desc    Remove product to wish
+// @desc    Remove product to wish  
+
 // @route   POST /api/v1/wishlist
 // @access  Protected/User
 exports.removeProductFromWishlist = asyncHandler(async (req, res, next) => {
